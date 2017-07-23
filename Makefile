@@ -1,6 +1,6 @@
 # Eingabebereich ******************************************************************
 # Ausgabename der Hexdatei
-OUTPUT_EXE=NeoPixelClock
+OUTPUT_EXE=TS100_NG
 
 # ---------------------------------------------------------------------------------
 # Quelldateien , wichtig ist das "\" am Ende einer Zeile, wenn noch weitere Dateien
