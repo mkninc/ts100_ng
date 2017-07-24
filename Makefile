@@ -145,9 +145,9 @@ INCLUDES=-I$(APP_INC_DIR) \
 		-I$(MCUAPI_DIR) \
 		-I$(RTOS_DIR)/include \
 		-I$(RTOS_DIR)/portable/GCC/ARM_CM4F \
-		-IStdPeriph_Driver/inc \
-		-ICMSIS/device \
-		-ICMSIS/core \
+		-isystemStdPeriph_Driver/inc \
+		-isystemCMSIS/device \
+		-isystemCMSIS/core \
 
 CHECKOPTIONS=-pedantic 			\
 			-Wall 				\
@@ -193,12 +193,13 @@ CXXFLAGS=$(CPUFLAGS) \
 		-D${COMPILER}  		\
 		-MMD 				\
 		$(CHECKOPTIONS)		\
+		-std=c++17			\
 		$(OPTIM) 			\
 		-fno-common			\
 		-fno-rtti \
 		-fno-exceptions \
-		-T$(LDSCRIPT)		\
-		-std=c++11
+		-T$(LDSCRIPT)	
+		
 		
 CFLAGS=$(CPUFLAGS) \
 		$(DEBUG) 			\
@@ -207,10 +208,11 @@ CFLAGS=$(CPUFLAGS) \
 		$(GLOBAL_DEFINES) 	\
 		-D${COMPILER}  		\
 		-MMD 				\
+		-std=c11			\
 		$(OPTIM) 			\
 		-fno-common			\
-		-T$(LDSCRIPT)		\
-		-std=c99 
+		-T$(LDSCRIPT)
+
 		
 AFLAGS=$(CPUFLAGS) \
 		$(DEBUG) 			\
