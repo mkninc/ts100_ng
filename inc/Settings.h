@@ -24,7 +24,7 @@
 /*
  * This struct must be a multiple of 2 bytes as it is saved / restored from flash in uint16_t chunks
  */
-struct {
+typedef struct {
 	uint16_t SolderingTemp; 		//current set point for the iron
 	uint32_t SleepTemp; 			//temp to drop to in sleep
 	uint8_t version;				//Used to track if a reset is needed on firmware upgrade
@@ -40,7 +40,9 @@ struct {
 	uint16_t tempCalibration;		//Temperature calibration value
 	uint16_t voltageDiv;			//Voltage divisor factor
 	uint16_t BoostTemp; 			//Boost mode set point for the iron
-} systemSettings;
+} systemSettingsType;
+
+extern systemSettingsType systemSettings;
 
 void saveSettings();
 void restoreSettings();

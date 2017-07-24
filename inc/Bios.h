@@ -17,12 +17,11 @@
 #include "misc.h"
 extern volatile uint32_t gHeat_cnt;
 
-inline void setIronTimer(uint32_t time) {
-	gHeat_cnt = time;
-}
-inline uint32_t getIronTimer() {
-	return gHeat_cnt;
-}
+void setIronTimer(uint32_t time);
+
+uint32_t getIronTimer();
+
+
 /*Get set the remaining toggles of the heater output*/
 u32 Get_HeatingTime(void);
 void Set_HeatingTime(u32 heating_time);

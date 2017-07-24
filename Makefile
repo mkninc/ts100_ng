@@ -6,37 +6,58 @@ OUTPUT_EXE=TS100_NG
 # Quelldateien , wichtig ist das "\" am Ende einer Zeile, wenn noch weitere Dateien
 # folgen. Nach dem "\" dürfen keine weiteren Zeichen folgen.
 SOURCE=$(APP_SOURCE_DIR)/startup.c \
-		$(APP_SOURCE_DIR)/hwinit.c \
-		$(APP_SOURCE_DIR)/uart_drv.c \
-		$(APP_SOURCE_DIR)/ws2812_drv.c \
-		$(APP_SOURCE_DIR)/freertos_hooks.c \
-		$(APP_SOURCE_DIR)/utils/uartstdio.c \
-		$(APP_SOURCE_DIR)/utils/ustdlib.c \
-		$(APP_SOURCE_DIR)/drivers/rgb.c \
-		$(APP_SOURCE_DIR)/drivers/buttons.c \
-		$(RTOS_DIR)/croutine.c \
-		$(RTOS_DIR)/list.c \
-		$(RTOS_DIR)/queue.c \
-		$(RTOS_DIR)/tasks.c \
-		$(RTOS_DIR)/timers.c \
-		$(RTOS_DIR)/portable/GCC/ARM_CM4F/port.c \
-		$(RTOS_DIR)/portable/MemMang/heap_4.c 
+		$(APP_SOURCE_DIR)/Analog.c \
+		$(APP_SOURCE_DIR)/Bios.c \
+		$(APP_SOURCE_DIR)/I2C.c \
+		$(APP_SOURCE_DIR)/Interrupt.c \
+		$(APP_SOURCE_DIR)/Main.c \
+		$(APP_SOURCE_DIR)/MMA8652FC.c \
+		$(APP_SOURCE_DIR)/Modes.c \
+		$(APP_SOURCE_DIR)/Oled.c \
+		$(APP_SOURCE_DIR)/PID.c \
+		$(APP_SOURCE_DIR)/Settings.c \
+		$(MCUAPI_DIR)/src/misc.c \
+		$(MCUAPI_DIR)/src/stm32f10x_adc.c \
+		$(MCUAPI_DIR)/src/stm32f10x_bkp.c \
+		$(MCUAPI_DIR)/src/stm32f10x_can.c \
+		$(MCUAPI_DIR)/src/stm32f10x_cec.c \
+		$(MCUAPI_DIR)/src/stm32f10x_crc.c \
+		$(MCUAPI_DIR)/src/stm32f10x_dac.c \
+		$(MCUAPI_DIR)/src/stm32f10x_dbgmcu.c \
+		$(MCUAPI_DIR)/src/stm32f10x_dma.c \
+		$(MCUAPI_DIR)/src/stm32f10x_exti.c \
+		$(MCUAPI_DIR)/src/stm32f10x_flash.c \
+		$(MCUAPI_DIR)/src/stm32f10x_fsmc.c \
+		$(MCUAPI_DIR)/src/stm32f10x_gpio.c \
+		$(MCUAPI_DIR)/src/stm32f10x_i2c.c \
+		$(MCUAPI_DIR)/src/stm32f10x_iwdg.c \
+		$(MCUAPI_DIR)/src/stm32f10x_pwr.c \
+		$(MCUAPI_DIR)/src/stm32f10x_rcc.c \
+		$(MCUAPI_DIR)/src/stm32f10x_rtc.c \
+		$(MCUAPI_DIR)/src/stm32f10x_sdio.c \
+		$(MCUAPI_DIR)/src/stm32f10x_spi.c \
+		$(MCUAPI_DIR)/src/stm32f10x_tim.c \
+		$(MCUAPI_DIR)/src/stm32f10x_usart.c \
+		$(MCUAPI_DIR)/src/stm32f10x_wwdg.c
+		
+
 		
 		
 		
-SOURCE_CPP=$(APP_SOURCE_DIR)/main.cpp \
-		$(APP_SOURCE_DIR)/clock_render.cpp \
-		$(APP_SOURCE_DIR)/neopixel.cpp \
-		$(APP_SOURCE_DIR)/RTCClock.cpp \
-		$(APP_SOURCE_DIR)/DCF77Clock.cpp \
-		$(APP_SOURCE_DIR)/TestClass.cpp
+SOURCE_CPP=
+#$(APP_SOURCE_DIR)/main.cpp \
+#		$(APP_SOURCE_DIR)/clock_render.cpp \
+#		$(APP_SOURCE_DIR)/neopixel.cpp \
+#		$(APP_SOURCE_DIR)/RTCClock.cpp \
+#		$(APP_SOURCE_DIR)/DCF77Clock.cpp \
+#		$(APP_SOURCE_DIR)/TestClass.cpp
 	
 # ---------------------------------------------------------------------------------
 
 
 # Verzeichnisse ----------------------------------------------------------------
-GCC_DIR=/wbin/opt/gcc-arm-none-eabi-6-2017-q2-update/bin
-MCUAPI_DIR=TivaWare
+GCC_DIR=H:/development/armgcc/6_2017-q2-update/bin
+MCUAPI_DIR=StdPeriph_Driver
 RTOS_DIR=FreeRTOS/Source
 
 # Bibliotheken
@@ -56,9 +77,9 @@ OUTPUT_DIR=Objects
 
 # Compiler Optimierungen -------------------------------------------------------
 # no code optimization
-#OPTIM=-O0
+OPTIM=-O0
 #debug code optimization
-OPTIM=-Og
+#OPTIM=-Og
 # size optimization
 #OPTIM=-Os
 # optimize code
@@ -77,10 +98,12 @@ DEBUG=-g
 
 # Ende Eingabebereich **********************************************************	
 # Verwendete Bibliotheken ------------------------------------------------------
-LIBS=$(DRV_LIB)/gcc/libdriver.a
+LIBS=
+
+#$(DRV_LIB)/gcc/libdriver.a
 
 # Linker script ----------------------------------------------------------------
-LDSCRIPT_FLASH=freertos.ld
+LDSCRIPT_FLASH=LinkerScript2.ld
 LDSCRIPT=$(LDSCRIPT_FLASH)
 # ------------------------------------------------------------------------------
 COMPILER=gcc
@@ -107,19 +130,24 @@ LINKER_FLAGS=-Wl,--gc-sections 		\
 			-lm 
 
 # Allgemeine Compiler Optionen -------------------------------------------------
-CPUFLAGS=-D GCC_ARMCM4		\
-		-D ARM_MATH_CM4 	\
+CPUFLAGS=-D GCC_ARMCM3		\
+		-D ARM_MATH_CM3 	\
+		-D STM32F10X_MD		\
+		-D USE_STDPERIPH_DRIVER \
 		-mthumb 			\
-		-mcpu=cortex-m4 	\
+		-mcpu=cortex-m3 	\
 		-mfpu=fpv4-sp-d16	\
-		-mfloat-abi=hard
+		-mfloat-abi=soft
 		
 INCLUDES=-I$(APP_INC_DIR) \
 		-I$(APP_SOURCE_DIR) \
 		-I$(DRV_LIB) 		\
 		-I$(MCUAPI_DIR) \
 		-I$(RTOS_DIR)/include \
-		-I$(RTOS_DIR)/portable/GCC/ARM_CM4F
+		-I$(RTOS_DIR)/portable/GCC/ARM_CM4F \
+		-IStdPeriph_Driver/inc \
+		-ICMSIS/device \
+		-ICMSIS/core \
 
 CHECKOPTIONS=-pedantic 			\
 			-Wall 				\
@@ -237,13 +265,13 @@ $(OUT_HEXFILE).axf : $(OUT_OBJS) $(OUT_OBJS_CPP) Makefile $(LDSCRIPT)
 $(OUT_OBJS): $(OUTPUT_DIR)/%.o : %.c Makefile
 	@test -d $(@D) || mkdir -p $(@D)
 	@echo Compiling ${<} 
-	@$(CC) -c $(CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@
 	@$(OBJDUMP) -d -S $@ > $@.lst	 	
 	
 $(OUT_OBJS_CPP): $(OUTPUT_DIR)/%.o : %.cpp Makefile
 	@test -d $(@D) || mkdir -p $(@D)
 	@echo Compiling ${<} 
-	@$(CPP) -c $(CXXFLAGS) $< -o $@
+	$(CPP) -c $(CXXFLAGS) $< -o $@
 	@$(OBJDUMP) -d -S $@ > $@.lst	 
 			
 clean :

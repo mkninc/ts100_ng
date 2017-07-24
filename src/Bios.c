@@ -270,3 +270,11 @@ void TIM3_ISR(void) {
 	}
 
 }
+
+void setIronTimer(uint32_t time) {
+	gHeat_cnt = time;
+}
+
+uint32_t getIronTimer() {
+	return gHeat_cnt;
+}

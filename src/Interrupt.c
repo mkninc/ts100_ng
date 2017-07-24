@@ -212,3 +212,33 @@ void USB_LP_CAN1_RX0_IRQHandler(void) {
 
 }
 
+
+uint32_t millis() {
+	return system_Ticks;
+}
+
+uint32_t getLastButtonPress() {
+	return lastKeyPress;
+}
+void resetLastButtonPress() {
+	lastKeyPress = millis();
+
+}
+void resetButtons() {
+	keyState = 0;
+}
+
+uint32_t getLastMovement() {
+	return lastMovement;
+}
+
+uint16_t getButtons() {
+	return keyState;
+}
+uint16_t getRawButtons() {
+	return rawKeys;
+}
+void restoreButtons()
+{
+	keyState=getRawButtons();
+}

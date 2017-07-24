@@ -8,6 +8,10 @@
  */
 
 #include "Settings.h"
+
+
+systemSettingsType systemSettings;
+
 #define FLASH_ADDR 		(0x8000000|0xBC00)/*Flash start OR'ed with the maximum amount of flash - 1024 bytes*/
 #define FLASH_LOGOADDR 	(0x8000000|0xB800) /*second last page of flash set aside for logo image*/
 void saveSettings() {

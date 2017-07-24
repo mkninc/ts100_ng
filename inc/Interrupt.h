@@ -14,35 +14,21 @@ volatile extern uint32_t lastMovement;
 volatile extern uint8_t keyState;
 volatile extern uint8_t rawKeys;
 
-inline uint32_t millis() {
-	return system_Ticks;
-}
+uint32_t millis();
 
-inline uint32_t getLastButtonPress() {
-	return lastKeyPress;
-}
-inline void resetLastButtonPress() {
-	lastKeyPress = millis();
+uint32_t getLastButtonPress();
 
-}
-inline void resetButtons() {
-	keyState = 0;
-}
+void resetLastButtonPress();
 
-inline uint32_t getLastMovement() {
-	return lastMovement;
-}
+void resetButtons();
 
-inline uint16_t getButtons() {
-	return keyState;
-}
-inline uint16_t getRawButtons() {
-	return rawKeys;
-}
-inline void restoreButtons()
-{
-	keyState=getRawButtons();
-}
+uint32_t getLastMovement();
+
+uint16_t getButtons();
+
+uint16_t getRawButtons();
+
+void restoreButtons();
 
 /*IRQ prototypes*/
 void NMI_Handler(void);
