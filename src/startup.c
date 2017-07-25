@@ -1,6 +1,7 @@
 //#include "config.h"
 //#include "FreeRTOS.h"
 #include "main.h"
+#include "Interrupt.h"
 
 //*****************************************************************************
 //
@@ -40,67 +41,101 @@ void (* const g_pfnVectors[])(void) =
 		ResetISR,// The reset handler
 		NmiSR,// The NMI handler
 		FaultISR,// The hard fault handler
-		IntDefaultHandler,// The MPU fault handler
-		IntDefaultHandler,// The bus fault handler
-		IntDefaultHandler,// The usage fault handler
-		0,// Reserved
-		0,// Reserved
-		0,// Reserved
-		0,// Reserved
-		IntDefaultHandler,//vPortSVCHandler, 						// SVCall handler
-		IntDefaultHandler,// Debug monitor handler
-		0,// Reserved
-		IntDefaultHandler,//xPortPendSVHandler, 					// The PendSV handler
-		IntDefaultHandler,//xPortSysTickHandler, 					// The SysTick handler
-		IntDefaultHandler,// GPIO Port A
-		IntDefaultHandler,// GPIO Port B
-		IntDefaultHandler,// GPIO Port C
-		IntDefaultHandler,// GPIO Port D
-		IntDefaultHandler,// GPIO Port E
-		IntDefaultHandler,// UART0 Rx and Tx
-		IntDefaultHandler,// UART1 Rx and Tx
-		IntDefaultHandler,// SSI Rx and Tx
-		IntDefaultHandler,// I2C Master and Slave
-		IntDefaultHandler,// PWM Fault
-		IntDefaultHandler,// PWM Generator 0
-		IntDefaultHandler,// PWM Generator 1
-		IntDefaultHandler,// PWM Generator 2
-		IntDefaultHandler,// Quadrature Encoder
-		IntDefaultHandler,// ADC Sequence 0
-		IntDefaultHandler,// ADC Sequence 1
-		IntDefaultHandler,// ADC Sequence 2
-		IntDefaultHandler,// ADC Sequence 3
-		IntDefaultHandler,// Watchdog timer
-		IntDefaultHandler,// Timer 0 subtimer A
-		IntDefaultHandler,// Timer 0 subtimer B
-		IntDefaultHandler,// Timer 1 subtimer A
-		IntDefaultHandler,// Timer 1 subtimer B
-		IntDefaultHandler,// Timer 2 subtimer A
-		IntDefaultHandler,// Timer 2 subtimer B
-		IntDefaultHandler,// Analog Comparator 0
-		IntDefaultHandler,// Analog Comparator 1
-		IntDefaultHandler,// Analog Comparator 2
-		IntDefaultHandler,// System Control (PLL, OSC, BO)
-		IntDefaultHandler,// FLASH Control
-		IntDefaultHandler,// GPIO Port F
-		IntDefaultHandler,// GPIO Port G
-		IntDefaultHandler,// GPIO Port H
-		IntDefaultHandler,// UART2 Rx and Tx
-		IntDefaultHandler,// SSI1 Rx and Tx
-		IntDefaultHandler,// Timer 3 subtimer A
-		IntDefaultHandler,// Timer 3 subtimer B
-		IntDefaultHandler,// I2C1 Master and Slave
-		IntDefaultHandler,// Quadrature Encoder 1
-		IntDefaultHandler,// CAN0
-		IntDefaultHandler,// CAN1
-		IntDefaultHandler,// CAN2
-		IntDefaultHandler,// Ethernet
-		IntDefaultHandler,// Hibernate
-		IntDefaultHandler,// USB0
-		IntDefaultHandler,// PWM Generator 3
-		IntDefaultHandler,// uDMA Software Transfer
-		IntDefaultHandler
-		// uDMA Error
+		MemManage_Handler,
+		BusFault_Handler,
+		UsageFault_Handler,
+		0,
+		0,
+		0,
+		0,
+		SVC_Handler,
+		DebugMon_Handler,
+		0,
+		PendSV_Handler,
+		SysTick_Handler,
+		WWDG_IRQHandler,
+		PVD_IRQHandler,
+		TAMPER_IRQHandler,
+		RTC_IRQHandler,
+		FLASH_IRQHandler,
+		RCC_IRQHandler,
+		EXTI0_IRQHandler,
+		EXTI1_IRQHandler,
+		EXTI2_IRQHandler,
+		EXTI3_IRQHandler,
+		EXTI4_IRQHandler,
+		DMA1_Channel1_IRQHandler,
+		DMA1_Channel2_IRQHandler,
+		DMA1_Channel3_IRQHandler,
+		DMA1_Channel4_IRQHandler,
+		DMA1_Channel5_IRQHandler,
+		DMA1_Channel6_IRQHandler,
+		DMA1_Channel7_IRQHandler,
+		ADC1_2_IRQHandler,
+		USB_HP_CAN1_TX_IRQHandler,
+		USB_LP_CAN1_RX0_IRQHandler,
+		CAN1_RX1_IRQHandler,
+		CAN1_SCE_IRQHandler,
+		EXTI9_5_IRQHandler,
+		TIM1_BRK_IRQHandler,
+		TIM1_UP_IRQHandler,
+		TIM1_TRG_COM_IRQHandler,
+		TIM1_CC_IRQHandler,
+		TIM2_IRQHandler,
+		TIM3_IRQHandler,
+		TIM4_IRQHandler,
+		I2C1_EV_IRQHandler,
+		I2C1_ER_IRQHandler,
+		I2C2_EV_IRQHandler,
+		I2C2_ER_IRQHandler,
+		SPI1_IRQHandler,
+		SPI2_IRQHandler,
+		USART1_IRQHandler,
+		USART2_IRQHandler,
+		USART3_IRQHandler,
+		EXTI15_10_IRQHandler,
+		RTCAlarm_IRQHandler,
+		USBWakeUp_IRQHandler,
+		TIM8_BRK_IRQHandler,
+		TIM8_UP_IRQHandler,
+		TIM8_TRG_COM_IRQHandler,
+		TIM8_CC_IRQHandler,
+		ADC3_IRQHandler,
+		FSMC_IRQHandler,
+		SDIO_IRQHandler,
+		TIM5_IRQHandler,
+		SPI3_IRQHandler,
+		UART4_IRQHandler,
+		UART5_IRQHandler,
+		TIM6_IRQHandler,
+		TIM7_IRQHandler,
+		DMA2_Channel1_IRQHandler,
+		DMA2_Channel2_IRQHandler,
+		DMA2_Channel3_IRQHandler,
+		DMA2_Channel4_5_IRQHandler,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+
 };
 
 //*****************************************************************************
