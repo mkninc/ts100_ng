@@ -5,6 +5,7 @@
  *      Author: Ralim <ralim@ralimtek.com>
  */
 #include "Modes.h"
+
 const char *SettingsLongNames[] = {
 		"      Power source. Sets cutoff voltage. <DC 10V> <S 3.3V per cell>",
 		"      Sleep Temperature <C>", "      Sleep Timeout <Minutes>",
@@ -17,6 +18,10 @@ const char *SettingsLongNames[] = {
 		"      Temperature when in boost mode" };
 uint8_t StatusFlags = 0;
 uint32_t temporaryTempStorage = 0;
+
+operatingModeEnum operatingMode;
+settingsPageEnum settingsPage;
+
 //This does the required processing and state changes
 void ProcessUI() {
 	uint8_t Buttons = getButtons(); //read the buttons status
