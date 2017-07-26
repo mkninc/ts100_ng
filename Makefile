@@ -96,6 +96,8 @@ DEBUG=-g
 # Without debug code
 #DEBUG=
 
+BOOT_HEXFILE=backup/DFU_Flash_Backup.hex
+
 # Ende Eingabebereich **********************************************************	
 # Verwendete Bibliotheken ------------------------------------------------------
 LIBS=
@@ -116,6 +118,7 @@ OBJCOPY=$(GCC_DIR)/arm-none-eabi-objcopy
 OBJDUMP=$(GCC_DIR)/arm-none-eabi-objdump
 SIZE=$(GCC_DIR)/arm-none-eabi-size
 SREC=srec_cat
+SREC_INFO=srec_info
 
 # Linker Optionen
 LINKER_FLAGS=-Wl,--gc-sections 		\
@@ -228,7 +231,6 @@ OBJS_CPP = $(SOURCE_CPP:.cpp=.o)
 
 OUT_OBJS=$(addprefix $(OUTPUT_DIR)/,$(OBJS))
 OUT_OBJS_CPP=$(addprefix $(OUTPUT_DIR)/,$(OBJS_CPP))
-
 OUT_HEXFILE=$(addprefix $(HEXFILE_DIR)/,$(OUTPUT_EXE))
 	 
 all: $(OUT_HEXFILE).hex
@@ -236,16 +238,20 @@ all: $(OUT_HEXFILE).hex
 #
 # The rule to create the target directory
 #
-$(OUT_HEXFILE).bin : $(OUT_HEXFILE).axf
-		$(OBJCOPY) $(OUT_HEXFILE).axf -O binary $(OUT_HEXFILE).bin
+$(OUT_HEXFILE).srec : $(OUT_HEXFILE).axf
+		$(OBJCOPY) $(OUT_HEXFILE).axf -O srec $(OUT_HEXFILE).srec
 		$(OBJDUMP) -d -S $(OUT_HEXFILE).axf > $(OUT_HEXFILE).lst
 		$(SIZE) -x $(OUT_HEXFILE).axf
 
 # Regeln fuer die Erzeugung der Hex-Dateien 
 # TODO: Bootloader groesse beim Aufruf von SREC
-$(OUT_HEXFILE).hex : $(OUT_HEXFILE).bin
+$(OUT_HEXFILE).hex : $(OUT_HEXFILE).srec
 		@echo Erstelle $(OUT_HEXFILE).hex
-		@$(SREC) --line-length=43 $(OUT_HEXFILE).bin -Binary -O $(OUT_HEXFILE).hex -Intel
+		$(SREC_INFO) $(BOOT_HEXFILE) -Intel
+		$(SREC_INFO) $(OUT_HEXFILE).hex -Intel
+		@$(SREC) --line-length=43 $(OUT_HEXFILE).srec -motorola -O $(OUT_HEXFILE).hex -Intel
+		$(SREC) --line-length=43 $(BOOT_HEXFILE) -Intel -crop 0x8000000 0x8004000 $(OUT_HEXFILE).srec -motorola -O $(OUT_HEXFILE)_FULL.hex -Intel
+		$(SREC_INFO) $(OUT_HEXFILE)_FULL.hex -Intel
 #		@$(SREC) --line-length=43 $(OUT_HEXFILE).bin -Binary -fill 0xFF 0x0000 0x1D000 -crop 0x1080 0x1CFFE -l-e-crc16 0x1CFFE -xmodem \
 #								$(OUT_HEXFILE).bin -Binary -crop 0x0 0x1080 \
 #								-O $(OUT_HEXFILE).hex -Intel
