@@ -248,9 +248,9 @@ $(OUT_HEXFILE).srec : $(OUT_HEXFILE).axf
 $(OUT_HEXFILE).hex : $(OUT_HEXFILE).srec
 		@echo Erstelle $(OUT_HEXFILE).hex
 		$(SREC_INFO) $(BOOT_HEXFILE) -Intel
-		$(SREC_INFO) $(OUT_HEXFILE).hex -Intel
-		@$(SREC) --line-length=43 $(OUT_HEXFILE).srec -motorola -O $(OUT_HEXFILE).hex -Intel
+		$(SREC) --line-length=43 $(OUT_HEXFILE).srec -motorola -O $(OUT_HEXFILE).hex -Intel
 		$(SREC) --line-length=43 $(BOOT_HEXFILE) -Intel -crop 0x8000000 0x8004000 $(OUT_HEXFILE).srec -motorola -O $(OUT_HEXFILE)_FULL.hex -Intel
+		$(SREC_INFO) $(OUT_HEXFILE).hex -Intel
 		$(SREC_INFO) $(OUT_HEXFILE)_FULL.hex -Intel
 #		@$(SREC) --line-length=43 $(OUT_HEXFILE).bin -Binary -fill 0xFF 0x0000 0x1D000 -crop 0x1080 0x1CFFE -l-e-crc16 0x1CFFE -xmodem \
 #								$(OUT_HEXFILE).bin -Binary -crop 0x0 0x1080 \

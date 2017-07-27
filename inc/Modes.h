@@ -48,6 +48,8 @@ typedef enum {
 	BOOSTTEMP,
 } settingsPageEnum;
 
-void ProcessUI();
-void DrawUI();
+extern void ProcessUI(void);
+extern void DrawUI(void);
+extern void drawTemp(uint16_t temp, uint8_t x, uint8_t roundingMode);
+
 #endif /* MODES_H_ */

@@ -11,24 +11,25 @@
 #include "stm32f10x.h"
 #include "Interrupt.h"
 
-void Oled_DisplayOn(void);
-void Oled_DisplayOff(void);
+extern void Oled_DisplayOn(void);
+extern void Oled_DisplayOff(void);
 
-const u8* Oled_DrawArea(u8 x0, u8 y0, u8 wide, u8 high,const u8* ptr);
-void Set_ShowPos(u8 x, u8 y);
-void Oled_DisplayFlip();
-void GPIO_Init_OLED(void);
-void Init_Oled(uint8_t leftHanded);
-const u8* Data_Command(u8 len,const u8* ptr);
-void Clear_Screen(void);//Clear the screen
+extern const u8* Oled_DrawArea(u8 x0, u8 y0, u8 wide, u8 high,const u8* ptr);
+extern void Set_ShowPos(u8 x, u8 y);
+extern void Oled_DisplayFlip(void);
+extern void GPIO_Init_OLED(void);
+extern void Init_Oled(uint8_t leftHanded);
+extern const u8* Data_Command(u8 len,const u8* ptr);
+extern void Clear_Screen(void);//Clear the screen
 /*Functions for writing to the screen*/
-void OLED_DrawString(const char* string, const uint8_t length);
-void OLED_DrawChar(char c, uint8_t x);
-void OLED_DrawExtendedChar(uint8_t id, uint8_t x);
-void OLED_DrawTwoNumber(uint8_t in, uint8_t x);
-void OLED_BlankSlot(uint8_t xStart,uint8_t width);
-void OLED_DrawThreeNumber(uint16_t in, uint8_t x);
-void OLED_DrawIDLELogo();
-void OLED_DrawSymbol(uint8_t x,uint8_t symbol);
+extern void OLED_DrawString(const char* string, const uint8_t length);
+extern void OLED_DrawChar(char c, uint8_t x);
+extern void OLED_DrawExtendedChar(uint8_t id, uint8_t x);
+extern void OLED_DrawTwoNumber(uint8_t in, uint8_t x);
+extern void OLED_BlankSlot(uint8_t xStart,uint8_t width);
+extern void OLED_DrawThreeNumber(uint16_t in, uint8_t x);
+extern void OLED_DrawIDLELogo(void);
+extern void OLED_DrawSymbol(uint8_t x,uint8_t symbol);
+extern void OLED_DrawFourNumber(uint16_t in, uint8_t x);
 #endif
 /******************************** END OF FILE *********************************/

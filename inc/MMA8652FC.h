@@ -135,5 +135,8 @@ void StartUp_Accelerometer(uint8_t sensitivity);//This is the only function we e
 #define INT_EN_FF_MT    1<<2    //Freefall/Motion Interrupt Enable
 #define INT_EN_DRDY     1<<0    //Data Ready Interrupt Enable
 
+
+extern uint8_t I2C_RegisterRead(uint8_t reg);
+extern void I2C_RegisterWrite(uint8_t reg, uint8_t data);
 #endif
 /******************************** END OF FILE *********************************/

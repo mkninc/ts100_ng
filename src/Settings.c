@@ -6,6 +6,8 @@
  *
  *      This file holds the users settings and saves / restores them to the devices flash
  */
+#include "Interrupt.h"
+#include "Oled.h"
 
 #include "Settings.h"
 
@@ -14,7 +16,10 @@ systemSettingsType systemSettings;
 
 #define FLASH_ADDR 		(0x8000000|0xBC00)/*Flash start OR'ed with the maximum amount of flash - 1024 bytes*/
 #define FLASH_LOGOADDR 	(0x8000000|0xB800) /*second last page of flash set aside for logo image*/
-void saveSettings() {
+
+void saveSettings(void) {
+	uint16_t *data = (uint16_t*) &systemSettings;
+
 	//First we erase the flash
 	FLASH_Unlock(); //unlock flash writing
 	FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
@@ -22,13 +27,13 @@ void saveSettings() {
 		; //wait for it
 	//erased the chunk
 	//now we program it
-	uint16_t *data = (uint16_t*) &systemSettings;
+
 	for (uint8_t i = 0; i < (sizeof(systemSettings) / 2); i++) {
 		FLASH_ProgramHalfWord(FLASH_ADDR + (i * 2), data[i]);
 	}
 }
 
-void restoreSettings() {
+void restoreSettings(void) {
 	//We read the flash
 	uint16_t *data = (uint16_t*) &systemSettings;
 	for (uint8_t i = 0; i < (sizeof(systemSettings) / 2); i++) {
@@ -57,7 +62,7 @@ uint8_t lookupVoltageLevel(uint8_t level) {
 	else
 		return (level * 33) + (33 * 2);
 }
-void resetSettings() {
+void resetSettings(void) {
 
 	systemSettings.SleepTemp = 1500;//Temperature the iron sleeps at - default 150.0 C
 	systemSettings.SleepTime = 1;//How many minutes we wait until going to sleep - default 1 min
@@ -76,15 +81,16 @@ void resetSettings() {
 	systemSettings.BoostTemp = 4000;				//default to 400C
 }
 
-void showBootLogoIfavailable() {
+void showBootLogoIfavailable(void) {
 	//check if the header is there (0xAA,0x55,0xF0,0x0D)
 	//If so display logo
 	uint16_t temp[98];
+	uint8_t temp8[98 * 2];
 
 	for (uint8_t i = 0; i < (98); i++) {
 		temp[i] = *(uint16_t *) (FLASH_LOGOADDR + (i * 2));
 	}
-	uint8_t temp8[98 * 2];
+
 	for (uint8_t i = 0; i < 98; i++) {
 		temp8[i * 2] = temp[i] >> 8;
 		temp8[i * 2 + 1] = temp[i] & 0xFF;

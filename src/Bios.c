@@ -13,6 +13,8 @@ volatile uint32_t gHeat_cnt = 0;
  * Setup system clocks to run off internal oscillator at 48Mhz
  */
 void RCC_Config(void) {
+	RCC_ClocksTypeDef RCC_Clocks;
+
 	RCC_DeInit();
 	FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
 	FLASH_SetLatency(FLASH_Latency_1);   // Flash 1 wait state for 48MHz
@@ -37,7 +39,6 @@ void RCC_Config(void) {
 
 	RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_Div1);       // USBCLK = 48MHz
 
-	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
 	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000); //Enable the systick timer at 1ms
 }

@@ -25,6 +25,7 @@ uint16_t readDCVoltage(uint16_t divFactor) {
 int16_t readTipTemp() {
 	static uint32_t rollingAverage[16];
 	static uint8_t rIndex = 0;
+	uint8_t gMeas_cnt;
 
 	/*The head has a thermocouple inline with the heater
 	 This is read by turning off the heater
@@ -37,7 +38,7 @@ int16_t readTipTemp() {
 	setIronTimer(0); //set the remaining time to zero
 	HEAT_OFF(); //heater must be off
 	delayMs(5); //wait for the heater to time out
-	uint8_t gMeas_cnt = 9; //how many measurements to make
+	gMeas_cnt = 9; //how many measurements to make
 	max = ad_sum = min = Get_ADC1Value(0);
 
 	while (gMeas_cnt > 0) {

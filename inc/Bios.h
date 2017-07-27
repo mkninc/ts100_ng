@@ -17,27 +17,27 @@
 #include "misc.h"
 extern volatile uint32_t gHeat_cnt;
 
-void setIronTimer(uint32_t time);
+extern void setIronTimer(uint32_t time);
 
-uint32_t getIronTimer();
+extern uint32_t getIronTimer(void);
 
 
 /*Get set the remaining toggles of the heater output*/
-u32 Get_HeatingTime(void);
-void Set_HeatingTime(u32 heating_time);
+extern u32 Get_HeatingTime(void);
+extern void Set_HeatingTime(u32 heating_time);
 
-void Init_Gtime(void);
-void USB_Port(u8 state);
-void NVIC_Config(u16 tab_offset);
-void RCC_Config(void);
-void GPIO_Config(void);
-void Adc_Init(void);
-void Init_Timer3(void);
+extern void Init_Gtime(void);
+extern void USB_Port(u8 state);
+extern void NVIC_Config(u16 tab_offset);
+extern void RCC_Config(void);
+extern void GPIO_Config(void);
+extern void Adc_Init(void);
+extern void Init_Timer3(void);
 /*Interrupts*/
-void TIM3_ISR(void);
-void Init_EXTI(void);
+extern void TIM3_ISR(void);
+extern void Init_EXTI(void);
 /*Watchdog*/
-void Start_Watchdog(uint32_t ms);
-void Clear_Watchdog(void);
+extern void Start_Watchdog(uint32_t ms);
+extern void Clear_Watchdog(void);
 #endif
 

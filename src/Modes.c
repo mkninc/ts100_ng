@@ -24,6 +24,8 @@ settingsPageEnum settingsPage;
 
 //This does the required processing and state changes
 void ProcessUI() {
+	int32_t newOutput;
+	uint16_t voltage;
 	uint8_t Buttons = getButtons(); //read the buttons status
 	static uint32_t lastModeChange = 0;
 	if (getRawButtons() && ((millis() - getLastButtonPress()) > 1000)) {
@@ -79,7 +81,7 @@ void ProcessUI() {
 				systemSettings.SolderingTemp = systemSettings.BoostTemp;
 			}
 			//Update the PID Loop
-			int32_t newOutput = computePID(systemSettings.SolderingTemp);
+			newOutput = computePID(systemSettings.SolderingTemp);
 			setIronTimer(newOutput);
 		} else {
 			if (StatusFlags == 8) {
@@ -98,13 +100,13 @@ void ProcessUI() {
 						return;
 					}
 				}
-			uint16_t voltage = readDCVoltage(systemSettings.voltageDiv); //get X10 voltage
+			voltage = readDCVoltage(systemSettings.voltageDiv); //get X10 voltage
 			if ((voltage) < lookupVoltageLevel(systemSettings.cutoutSetting)) {
 				operatingMode = UVLOWARN;
 				lastModeChange = millis();
 			}
 			//Update the PID Loop
-			int32_t newOutput = computePID(systemSettings.SolderingTemp);
+			newOutput = computePID(systemSettings.SolderingTemp);
 			setIronTimer(newOutput);
 		}
 		break;
@@ -238,7 +240,7 @@ void ProcessUI() {
 			}
 		}
 		//else if nothing has been pushed we need to compute the PID to keep the iron at the sleep temp
-		int32_t newOutput = computePID(systemSettings.SleepTemp);
+		newOutput = computePID(systemSettings.SleepTemp);
 		setIronTimer(newOutput);
 		break;
 	case COOLING: {
@@ -374,10 +376,12 @@ void drawTemp(uint16_t temp, uint8_t x, uint8_t roundingMode) {
 /*
  * Performs all the OLED drawing for the current operating mode
  */
-void DrawUI() {
+void DrawUI(void) {
 	static uint32_t lastOLEDDrawTime = 0;
 	static uint16_t lastSolderingDrawnTemp1 = 0;
 	static uint16_t lastSolderingDrawnTemp2 = 0;
+	uint8_t lengthLeft;
+	uint32_t tempavg;
 
 	static uint8_t settingsLongTestScrollPos = 0;
 	uint16_t temp = readIronTemp(0, 0, 0xFFFF);
@@ -407,7 +411,7 @@ void DrawUI() {
 				&& (millis() - lastOLEDDrawTime < 50))
 			return;
 
-		uint32_t tempavg = (temp + lastSolderingDrawnTemp1
+		tempavg = (temp + lastSolderingDrawnTemp1
 				+ lastSolderingDrawnTemp2);
 		tempavg /= 3;
 		drawTemp(tempavg, 0, systemSettings.temperatureRounding);
@@ -475,7 +479,7 @@ void DrawUI() {
 			StatusFlags = 4;
 			//If the user has idled for > 3 seconds, show the long name for the selected setting instead
 			//draw from settingsLongTestScrollPos through to end of screen
-			uint8_t lengthLeft = strlen(SettingsLongNames[settingsPage])
+			lengthLeft = strlen(SettingsLongNames[settingsPage])
 					- settingsLongTestScrollPos;
 			if (lengthLeft < 1)
 				settingsLongTestScrollPos = 0;
