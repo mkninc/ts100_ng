@@ -44,9 +44,9 @@ typedef struct {
 
 extern systemSettingsType systemSettings;
 
-void saveSettings();
-void restoreSettings();
-uint8_t lookupVoltageLevel(uint8_t level);
-void resetSettings();
-void showBootLogoIfavailable();
+extern void saveSettings(void);
+extern void restoreSettings(void);
+extern uint8_t lookupVoltageLevel(uint8_t level);
+extern void resetSettings(void);
+extern void showBootLogoIfavailable(void);
 #endif /* SETTINGS_H_ */

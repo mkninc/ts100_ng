@@ -183,11 +183,13 @@ void OLED_DrawString(const char* string, const uint8_t length) {
  * Draw a char onscreen at letter index x
  */
 void OLED_DrawChar(char c, uint8_t x) {
+	u8* ptr;
+
 	if (x > 7)
 		return; //clipping
 	x *= FONT_WIDTH; //convert to a x coordinate
 
-	u8* ptr = (u8*) FONT;
+	ptr = (u8*) FONT;
 	if (c >= 'a' && c <= 'z') {
 		ptr += (c - 'a' + 10) * (FONT_WIDTH * 2); //alpha is ofset 10 chars into the array
 	} else if (c >= 'A' && c <= 'Z') {

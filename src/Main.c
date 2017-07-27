@@ -10,7 +10,7 @@
 #include "Settings.h"
 #include "I2C.h"
 
-void setup();
+void setup(void);
 
 int main(void) {
 	setup();/*Setup the system*/
@@ -25,7 +25,7 @@ int main(void) {
 		}
 	}
 }
-void setup() {
+void setup(void) {
 	RCC_Config(); 										//setup system clock
 	NVIC_Config(0x4000); //this shifts the NVIC table to be offset, for the usb bootloader's size
 	GPIO_Config(); 									//setup all the GPIO pins
