@@ -16,6 +16,7 @@ SOURCE=$(APP_SOURCE_DIR)/startup.c \
 		$(APP_SOURCE_DIR)/Oled.c \
 		$(APP_SOURCE_DIR)/PID.c \
 		$(APP_SOURCE_DIR)/Settings.c \
+		$(APP_SOURCE_DIR)/Heater.c \
 		$(MCUAPI_DIR)/src/misc.c \
 		$(MCUAPI_DIR)/src/stm32f10x_adc.c \
 		$(MCUAPI_DIR)/src/stm32f10x_bkp.c \
