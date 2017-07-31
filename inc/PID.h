@@ -16,6 +16,6 @@ typedef struct {
 	uint32_t kp, ki, kd; //PID values
 } pidSettingsType;
 
-int32_t computePID(uint16_t setpoint);
-void setupPID(void);
+extern int32_t computePID(uint16_t const currentValue, uint16_t setpoint);
+extern void setupPID(void);
 #endif /* PID_H_ */

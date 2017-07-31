@@ -4,6 +4,8 @@
  *  Created on: 17 Sep 2016
  *      Author: Ralim <ralim@ralimtek.com>
  */
+#include "main.h"
+
 #include "Modes.h"
 
 const char *SettingsLongNames[] = {
@@ -36,7 +38,9 @@ void ProcessUI() {
 	} else if (Buttons != 0) {
 		resetButtons();
 	}
-
+#ifdef SIMULATION_BOARD
+	operatingMode = SOLDERING;
+#endif
 	switch (operatingMode) {
 	case STARTUP:
 		if (Buttons == (BUT_A | BUT_B)) {
@@ -81,7 +85,7 @@ void ProcessUI() {
 				systemSettings.SolderingTemp = systemSettings.BoostTemp;
 			}
 			//Update the PID Loop
-			newOutput = computePID(systemSettings.SolderingTemp);
+			newOutput = computePID(Heater_GetCurrentTemperature(&heater), systemSettings.SolderingTemp);
 			setIronTimer(newOutput);
 		} else {
 			if (StatusFlags == 8) {
@@ -106,7 +110,7 @@ void ProcessUI() {
 				lastModeChange = millis();
 			}
 			//Update the PID Loop
-			newOutput = computePID(systemSettings.SolderingTemp);
+			newOutput = computePID(Heater_GetCurrentTemperature(&heater), systemSettings.SolderingTemp);
 			setIronTimer(newOutput);
 		}
 		break;
@@ -240,7 +244,7 @@ void ProcessUI() {
 			}
 		}
 		//else if nothing has been pushed we need to compute the PID to keep the iron at the sleep temp
-		newOutput = computePID(systemSettings.SleepTemp);
+		newOutput = computePID(Heater_GetCurrentTemperature(&heater), systemSettings.SleepTemp);
 		setIronTimer(newOutput);
 		break;
 	case COOLING: {
@@ -326,15 +330,16 @@ void ProcessUI() {
 	}
 		break;
 	case TEMPCAL: {
+		Heater_SetCalibrationValue(&heater, 0);
 		if (Buttons == BUT_B) {
 			//Single button press, cycle over to the DC IN
 			operatingMode = THERMOMETER;
 		} else if (Buttons == BUT_A) {
 			//Try and calibrate
 			if (StatusFlags == 0) {
-				if ((readTipTemp() < 300) && (readSensorTemp() < 300)) {
+				if ((Heater_GetCurrentTemperature(&heater) < 300) && (readSensorTemp() < 300)) {
 					StatusFlags = 1;
-					systemSettings.tempCalibration = readTipTemp();
+					systemSettings.tempCalibration = Heater_GetCurrentTemperature(&heater);
 					saveSettings();
 				} else {
 					StatusFlags = 2;
@@ -384,7 +389,7 @@ void DrawUI(void) {
 	uint32_t tempavg;
 
 	static uint8_t settingsLongTestScrollPos = 0;
-	uint16_t temp = readIronTemp(0, 0, 0xFFFF);
+	uint16_t temp = Heater_GetCurrentTemperature(&heater); //  readIronTemp(0, 0, 0xFFFF);
 	switch (operatingMode) {
 	case STARTUP:
 		//We are chilling in the idle mode
@@ -614,14 +619,14 @@ void DrawUI(void) {
 	case COOLING:
 		//We are warning the user the tip is cooling
 		OLED_DrawString("COOL ", 5);
-		temp = readIronTemp(0, 1, 0xFFFF);		//force temp re-reading
+		temp = Heater_GetCurrentTemperature(&heater); // readIronTemp(0, 1, 0xFFFF);		//force temp re-reading
 		drawTemp(temp, 5, systemSettings.temperatureRounding);
 		break;
 	case UVLOWARN:
 		OLED_DrawString("LOW VOLT", 8);
 		break;
 	case THERMOMETER:
-		temp = readIronTemp(0, 1, 0xFFFF);	//Force a reading as heater is off
+		temp = Heater_GetCurrentTemperature(&heater); //readIronTemp(0, 1, 0xFFFF);	//Force a reading as heater is off
 		OLED_DrawString("TEMP ", 5);//extra one to it clears the leftover 'L' from IDLE
 		drawTemp(temp, 5, 0);
 		break;

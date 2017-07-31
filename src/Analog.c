@@ -6,6 +6,9 @@
  *      Contains the functions related to reading and scaling the adc pins
  *      This is used for temperature and battery voltage sense
  */
+#include "Heater.h"
+#include "main.h"
+
 #include "Analog.h"
 
 //Reads the dc input and returns it as X10 voltage (ie 236 = 23.6V)
@@ -22,48 +25,50 @@ uint16_t readDCVoltage(uint16_t divFactor) {
 //This reads the thermocouple in the tip
 //This allows us to read it in X10 mode
 //Returns temperature in C X10 mode
-int16_t readTipTemp() {
-	static uint32_t rollingAverage[16];
-	static uint8_t rIndex = 0;
-	uint8_t gMeas_cnt;
-
-	/*The head has a thermocouple inline with the heater
-	 This is read by turning off the heater
-	 Then read the output of the op-amp that is connected across the connections
-	 */
-	uint32_t ad_sum = 0;
-	uint32_t max = 0, min;
-	uint32_t ad_value, avg_data;
-	uint32_t timer = getIronTimer();
-	setIronTimer(0); //set the remaining time to zero
-	HEAT_OFF(); //heater must be off
-	delayMs(5); //wait for the heater to time out
-	gMeas_cnt = 9; //how many measurements to make
-	max = ad_sum = min = Get_ADC1Value(0);
-
-	while (gMeas_cnt > 0) {
-		ad_value = Get_ADC1Value(0);
-		ad_sum += ad_value;
-		if (ad_value > max)
-			max = ad_value;
-		if (ad_value < min)
-			min = ad_value;
-
-		gMeas_cnt--;
-	}
-	setIronTimer(timer);
-	ad_sum = ad_sum - max - min; //remove the two outliers
-	avg_data = ad_sum / 8; //take the average
-	rollingAverage[rIndex] = avg_data;
-	rIndex = (rIndex + 1) % 16;
-	return (rollingAverage[0] + rollingAverage[1] + rollingAverage[2]
-			+ rollingAverage[3] + rollingAverage[4] + rollingAverage[5]
-			+ rollingAverage[6] + rollingAverage[7] + rollingAverage[8]
-			+ rollingAverage[9] + rollingAverage[10] + rollingAverage[11]
-			+ rollingAverage[12] + rollingAverage[13] + rollingAverage[14]
-			+ rollingAverage[15]) / 16; //get the average
-
-}
+//int16_t readTipTemp() {
+//	static uint32_t rollingAverage[16];
+//	static uint8_t rIndex = 0;
+//	uint8_t gMeas_cnt;
+//
+//	/*The head has a thermocouple inline with the heater
+//	 This is read by turning off the heater
+//	 Then read the output of the op-amp that is connected across the connections
+//	 */
+//	uint32_t ad_sum = 0;
+//	uint32_t max = 0, min;
+//	uint32_t ad_value, avg_data;
+//	uint32_t timer = getIronTimer();
+//	setIronTimer(0); //set the remaining time to zero
+//	//HEAT_OFF(); //heater must be off
+//	//Heater_Suspend(&heater);
+//	delayMs(5); //wait for the heater to time out
+//	gMeas_cnt = 9; //how many measurements to make
+//	max = ad_sum = min = Get_ADC1Value(0);
+//
+//	while (gMeas_cnt > 0) {
+//		ad_value = Get_ADC1Value(0);
+//		ad_sum += ad_value;
+//		if (ad_value > max)
+//			max = ad_value;
+//		if (ad_value < min)
+//			min = ad_value;
+//
+//		gMeas_cnt--;
+//	}
+//	setIronTimer(timer);
+//	//Heater_Resume(&heater);
+//	ad_sum = ad_sum - max - min; //remove the two outliers
+//	avg_data = ad_sum / 8; //take the average
+//	rollingAverage[rIndex] = avg_data;
+//	rIndex = (rIndex + 1) % 16;
+//	return (rollingAverage[0] + rollingAverage[1] + rollingAverage[2]
+//			+ rollingAverage[3] + rollingAverage[4] + rollingAverage[5]
+//			+ rollingAverage[6] + rollingAverage[7] + rollingAverage[8]
+//			+ rollingAverage[9] + rollingAverage[10] + rollingAverage[11]
+//			+ rollingAverage[12] + rollingAverage[13] + rollingAverage[14]
+//			+ rollingAverage[15]) / 16; //get the average
+//
+//}
 
 /*******************************************************************************
  Function:
@@ -108,35 +113,4 @@ volatile uint16_t ADC1ConvertedValue[2];
 uint16_t Get_ADC1Value(uint8_t i) {
 	return ADC1ConvertedValue[i];
 }
-//This returns the calibrated temperature reading of the iron temp
-//inputs : calibration value / wether to take a new reading or not
-uint16_t readIronTemp(uint16_t calibration_temp, uint8_t read,
-		uint16_t setPointTemp) {
-	static uint16_t calTemp = 0;
-	static uint16_t lastVal = 0;
-	static uint16_t lastSetTemp;
-	if (setPointTemp != 0xFFFF)
-		lastSetTemp = setPointTemp;
-	if (calibration_temp != 0)
-		calTemp = calibration_temp;
 
-	if (read) {
-		int16_t compensation = 80 + 150 * (lastSetTemp - 1000) / 3000;
-		int16_t tipTemp = readTipTemp();
-		int16_t ColdJTemp = readSensorTemp();
-		if (lastSetTemp == 1000)
-			compensation -= 10;
-
-		if (lastSetTemp != 0) {
-			if (tipTemp > (compensation + calTemp))
-				tipTemp -= compensation;
-		}
-		if (ColdJTemp > 400)
-			ColdJTemp = 400;
-		lastVal = (tipTemp * 1000 + 807 * ColdJTemp - calTemp * 1000) / 807;
-
-	}
-
-	return lastVal;
-
-}

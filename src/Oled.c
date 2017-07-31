@@ -157,7 +157,9 @@ void Init_Oled(uint8_t leftHanded) {
 		OLED_Setup_Array[19] = 0xA1;
 		displayOffset = 0;
 	}
+#ifndef SIMULATION_BOARD
 	I2C_PageWrite((u8 *) OLED_Setup_Array, param_len, DEVICEADDR_OLED);
+#endif
 }
 
 /*******************************************************************************

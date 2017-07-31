@@ -7,6 +7,9 @@
 
 #ifndef INC_MAIN_H_
 #define INC_MAIN_H_
+#include "Heater.h"
+
+extern HEATER_INST heater;
 
 extern int main(void);
 

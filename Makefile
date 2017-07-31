@@ -91,6 +91,8 @@ OPTIM=-O0
 #GLOBAL_DEFINES=-DTARGET_IS_BLIZZARD_RB1 -DUART_BUFFERED
 # Without ROM library
 #GLOBAL_DEFINES=-D DEPRECATED
+#GLOBAL_DEFINES += -D SIMULATION_BOARD
+GLOBAL_DEFINES += -D USE_STDPERIPH_DRIVER 
 
 # Enable debug code generation
 DEBUG=-g
@@ -137,7 +139,6 @@ LINKER_FLAGS=-Wl,--gc-sections 		\
 CPUFLAGS=-D GCC_ARMCM3		\
 		-D ARM_MATH_CM3 	\
 		-D STM32F10X_MD		\
-		-D USE_STDPERIPH_DRIVER \
 		-mthumb 			\
 		-mcpu=cortex-m3 	\
 		-mfloat-abi=soft

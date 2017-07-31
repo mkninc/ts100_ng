@@ -1,9 +1,12 @@
 /*
  * Setup all the basic hardware in the system and handle timer3 tick
  */
-
-#include "Bios.h"
 #include "I2C.h"
+
+#include "Heater.h"
+#include "main.h"
+#include "Bios.h"
+
 
 
 #define ADC1_DR_Address    ((u32)0x4001244C)
@@ -72,10 +75,10 @@ void GPIO_Config(void) {
 
 	//------- Heat_Pin - Iron enable output PB4-----------------------------//
 
-	GPIO_InitStructure.GPIO_Pin = HEAT_PIN;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+//	GPIO_InitStructure.GPIO_Pin = HEAT_PIN;
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+//	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	//----------- PB0 Iron temp input---------------------------------------//
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
@@ -274,6 +277,7 @@ void TIM3_ISR(void) {
 
 void setIronTimer(uint32_t time) {
 	gHeat_cnt = time;
+	Heater_SetDutyCycle(&heater,   time / 50000.0f);
 }
 
 uint32_t getIronTimer() {
