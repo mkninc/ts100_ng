@@ -13,12 +13,12 @@ pidSettingsType pidSettings;
 #define MAXPIDOUTPUT 50000
 //This function computes the new value for the ON time of the system
 //This is the return value from this function
-int32_t computePID(uint16_t setpoint) {
+int32_t computePID(uint16_t const currentValue, uint16_t setpoint) {
 	int16_t DInput;
 	int32_t output;
 	int32_t ITerm = 0;
 	static int16_t lastReading = 0;
-	uint16_t currentReading = readIronTemp(0, 1,setpoint); //get the current temp of the iron
+	uint16_t currentReading = currentValue; //get the current temp of the iron
 	int16_t error = (int16_t) setpoint - (int16_t) currentReading; //calculate the error term
 	ITerm += (pidSettings.ki * error);
 	if (ITerm > MAXPIDOUTPUT/2)
@@ -38,6 +38,7 @@ int32_t computePID(uint16_t setpoint) {
 	return output;
 
 }
+
 /*Sets up the pid values*/
 void setupPID(void) {
 	pidSettings.kp = 15;

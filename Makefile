@@ -16,6 +16,7 @@ SOURCE=$(APP_SOURCE_DIR)/startup.c \
 		$(APP_SOURCE_DIR)/Oled.c \
 		$(APP_SOURCE_DIR)/PID.c \
 		$(APP_SOURCE_DIR)/Settings.c \
+		$(APP_SOURCE_DIR)/Heater.c \
 		$(MCUAPI_DIR)/src/misc.c \
 		$(MCUAPI_DIR)/src/stm32f10x_adc.c \
 		$(MCUAPI_DIR)/src/stm32f10x_bkp.c \
@@ -90,6 +91,8 @@ OPTIM=-O0
 #GLOBAL_DEFINES=-DTARGET_IS_BLIZZARD_RB1 -DUART_BUFFERED
 # Without ROM library
 #GLOBAL_DEFINES=-D DEPRECATED
+#GLOBAL_DEFINES += -D SIMULATION_BOARD
+GLOBAL_DEFINES += -D USE_STDPERIPH_DRIVER 
 
 # Enable debug code generation
 DEBUG=-g
@@ -136,10 +139,8 @@ LINKER_FLAGS=-Wl,--gc-sections 		\
 CPUFLAGS=-D GCC_ARMCM3		\
 		-D ARM_MATH_CM3 	\
 		-D STM32F10X_MD		\
-		-D USE_STDPERIPH_DRIVER \
 		-mthumb 			\
 		-mcpu=cortex-m3 	\
-		-mfpu=fpv4-sp-d16	\
 		-mfloat-abi=soft
 		
 INCLUDES=-I$(APP_INC_DIR) \
