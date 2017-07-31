@@ -140,7 +140,6 @@ CPUFLAGS=-D GCC_ARMCM3		\
 		-D USE_STDPERIPH_DRIVER \
 		-mthumb 			\
 		-mcpu=cortex-m3 	\
-		-mfpu=fpv4-sp-d16	\
 		-mfloat-abi=soft
 		
 INCLUDES=-I$(APP_INC_DIR) \
