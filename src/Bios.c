@@ -275,9 +275,9 @@ void TIM3_ISR(void) {
 
 }
 
-void setIronTimer(uint32_t time) {
+void setIronTimer(float time) {
 	gHeat_cnt = time;
-	Heater_SetDutyCycle(&heater,   time / 50000.0f);
+	Heater_SetDutyCycle(&heater, time );
 }
 
 uint32_t getIronTimer() {
