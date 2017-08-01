@@ -61,6 +61,11 @@ void Heater_Execute(HEATER_INST * const inst)
 	uint32_t measureDelay;
 	uint32_t avgSum;
 
+	if(inst->dutyCycle < 0.0f)
+		inst->dutyCycle = 0.0f;
+	if(inst->dutyCycle > 1.0f)
+		inst->dutyCycle = 1.0f;
+
 	timeOn = inst->cycleTimeMS * inst->dutyCycle + 0.5f;
 	timeOff = inst->cycleTimeMS - timeOn;
 

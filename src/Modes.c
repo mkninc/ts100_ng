@@ -26,7 +26,7 @@ settingsPageEnum settingsPage;
 
 //This does the required processing and state changes
 void ProcessUI() {
-	int32_t newOutput;
+	float newOutput;
 	uint16_t voltage;
 	uint8_t Buttons = getButtons(); //read the buttons status
 	static uint32_t lastModeChange = 0;

@@ -17,7 +17,7 @@
 #include "misc.h"
 extern volatile uint32_t gHeat_cnt;
 
-extern void setIronTimer(uint32_t time);
+extern void setIronTimer(float time);
 
 extern uint32_t getIronTimer(void);
 
