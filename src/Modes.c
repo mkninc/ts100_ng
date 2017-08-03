@@ -6,6 +6,8 @@
  */
 #include "main.h"
 
+#include "graphbuffer.h"
+
 #include "Modes.h"
 
 const char *SettingsLongNames[] = {
@@ -465,6 +467,10 @@ void DrawUI(void) {
 		} else {
 			OLED_DrawChar('C', 3);
 		}
+
+		// draw power bar
+		u32 length = Heater_GetDutyCycle(&heater) * 95;
+		Graph_DrawHorizontalBar(0, 15, length);
 
 	}
 		break;

@@ -10,6 +10,7 @@
 #include "Settings.h"
 #include "I2C.h"
 #include "Heater.h"
+#include "graphbuffer.h"
 
 void setup(void);
 
@@ -32,9 +33,19 @@ int main(void) {
 #endif
 		Heater_Execute(&heater);
 		ProcessUI();
+		Graph_Clear();
 #ifndef SIMULATION_BOARD
 		DrawUI();
+#else
+		for(u32 x= 0; x < 96; x++)
+		{
+			for(u32 y = 0; y < 16; y++)
+			{
+				Graph_DrawPixel(x, y, 0xFF);
+			}
+		}
 #endif
+		Graph_Update();
 		//delayMs(50); //Slow the system down a little bit
 		if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_5) == Bit_RESET) {
 			lastMovement = millis();
@@ -62,6 +73,8 @@ void setup(void) {
 	setupPID(); 										//Init the PID values
 	Heater_SetCalibrationValue(&heater, systemSettings.tempCalibration); //  readIronTemp(systemSettings.tempCalibration, 0, 0); //load the default calibration value
 	Init_Oled(systemSettings.flipDisplay); 				//Init the OLED display
+
+	Graphic_Init();
 
 #ifndef SIMULATION_BOARD
 	OLED_DrawString("VER 0.XX", 8); 					//Version Number

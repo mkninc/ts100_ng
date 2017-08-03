@@ -108,6 +108,11 @@ void Heater_SetDutyCycle(HEATER_INST * const inst, float const dutyCycle)
 inst->dutyCycle = dutyCycle;
 }
 
+float Heater_GetDutyCycle(HEATER_INST * const inst)
+{
+return inst->dutyCycle;
+}
+
 uint16_t Heater_GetCurrentTemperature(HEATER_INST * const inst)
 {
 
