@@ -17,6 +17,7 @@ SOURCE=$(APP_SOURCE_DIR)/startup.c \
 		$(APP_SOURCE_DIR)/PID.c \
 		$(APP_SOURCE_DIR)/Settings.c \
 		$(APP_SOURCE_DIR)/Heater.c \
+		$(APP_SOURCE_DIR)/graphbuffer.c \
 		$(MCUAPI_DIR)/src/misc.c \
 		$(MCUAPI_DIR)/src/stm32f10x_adc.c \
 		$(MCUAPI_DIR)/src/stm32f10x_bkp.c \
@@ -78,11 +79,11 @@ OUTPUT_DIR=Objects
 
 # Compiler Optimierungen -------------------------------------------------------
 # no code optimization
-OPTIM=-O0
+#OPTIM=-O0
 #debug code optimization
 #OPTIM=-Og
 # size optimization
-#OPTIM=-Os
+OPTIM=-Os
 # optimize code
 #OPTIM=-O3
 

@@ -8,6 +8,7 @@
  */
 #include "Interrupt.h"
 #include "Oled.h"
+#include "graphbuffer.h"
 
 #include "Settings.h"
 
@@ -117,7 +118,7 @@ void showBootLogoIfavailable(void) {
 		return;
 
 
-	Oled_DrawArea(0, 0, 96, 16, (uint8_t*) (temp8 + 4));
+	Graph_DrawArea(0, 0, 96, 16, (uint8_t*) (temp8 + 4));
 
 	delayMs(1000);
 }

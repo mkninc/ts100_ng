@@ -31,6 +31,8 @@ extern void Heater_Resume(HEATER_INST * const inst);
 
 extern void Heater_SetDutyCycle(HEATER_INST * const inst, float const dutyCycle);
 
+extern float Heater_GetDutyCycle(HEATER_INST * const inst);
+
 extern uint16_t Heater_GetCurrentTemperature(HEATER_INST * const inst);
 
 extern void Heater_SetCalibrationValue(HEATER_INST * const inst, uint16_t const calibrationValue);

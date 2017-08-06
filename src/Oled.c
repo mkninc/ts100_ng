@@ -8,11 +8,14 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "Oled.h"
+
 #include "Bios.h"
 #include "I2C.h"
-
 #include "Font.h"
+#include "graphbuffer.h"
+
+#include "Oled.h"
+
 int8_t displayOffset = 32;
 /*Setup params for the OLED screen*/
 /*http://www.displayfuture.com/Display/datasheet/controller/SSD1307.pdf*/
@@ -211,20 +214,20 @@ void OLED_DrawChar(char c, uint8_t x) {
 		ptr += (39) * (FONT_WIDTH * 2);
 	}
 
-	Oled_DrawArea(x, 0, FONT_WIDTH, 16, (u8*) ptr);
+	Graph_DrawArea(x, 0, FONT_WIDTH, 16, (u8*) ptr);
 }
 void OLED_DrawExtendedChar(uint8_t id, uint8_t x) {
 	u8* ptr = (u8*) extendedFont;
 	ptr += (id) * (FONT_WIDTH * 2);
 	x *= FONT_WIDTH; //convert to a x coordinate
 
-	Oled_DrawArea(x, 0, FONT_WIDTH, 16, (u8*) ptr);
+	Graph_DrawArea(x, 0, FONT_WIDTH, 16, (u8*) ptr);
 }
 void OLED_BlankSlot(uint8_t xStart, uint8_t width) {
 	u8* ptr = (u8*) FONT;
 	ptr += (36) * (FONT_WIDTH * 2);
 
-	Oled_DrawArea(xStart, 0, width, 16, (u8*) ptr);
+	Graph_DrawArea(xStart, 0, width, 16, (u8*) ptr);
 }
 
 /*
@@ -260,21 +263,21 @@ void OLED_DrawIDLELogo() {
 	drawAttempt++;
 	if (drawAttempt & 0x80) {
 		if (drawAttempt & 0x08)
-			Oled_DrawArea(0, 0, 96, 8, (u8*) Iron_RightArrow_UP);
+			Graph_DrawArea(0, 0, 96, 8, (u8*) Iron_RightArrow_UP);
 		else
-			Oled_DrawArea(0, 0, 96, 8, (u8*) Iron_RightArrow_DOWN);
+			Graph_DrawArea(0, 0, 96, 8, (u8*) Iron_RightArrow_DOWN);
 
-		Oled_DrawArea(0, 8, 96, 8, (u8*) Iron_Base);
+		Graph_DrawArea(0, 8, 96, 8, (u8*) Iron_Base);
 	} else {
 		if (drawAttempt & 0x08)
-			Oled_DrawArea(0, 0, 96, 8, (u8*) Iron_LeftArrow_UP);
+			Graph_DrawArea(0, 0, 96, 8, (u8*) Iron_LeftArrow_UP);
 		else
-			Oled_DrawArea(0, 0, 96, 8, (u8*) Iron_LeftArrow_DOWN);
-		Oled_DrawArea(0, 8, 96, 8, (u8*) Iron_Base);
+			Graph_DrawArea(0, 0, 96, 8, (u8*) Iron_LeftArrow_DOWN);
+		Graph_DrawArea(0, 8, 96, 8, (u8*) Iron_Base);
 	}
 
 }
 
 void OLED_DrawSymbol(uint8_t x, uint8_t symbol) {
-	Oled_DrawArea(x * FONT_WIDTH, 0, 16, 16, SymbolTable + (symbol * 32));
+	Graph_DrawArea(x * FONT_WIDTH, 0, 16, 16, SymbolTable + (symbol * 32));
 }
