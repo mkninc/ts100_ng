@@ -46,8 +46,8 @@ float computePID(uint16_t const currentValue, uint16_t setpoint) {
 
 /*Sets up the pid values*/
 void setupPID(void) {
-	pidSettings.kp = 0.04f; // 15;
-	pidSettings.ki = 0.002f; // 2;
+	pidSettings.kp = 0.01f; // 15;
+	pidSettings.ki = 0.001f; // 2;
 	pidSettings.kd = 0.0f; //3;
 
 	ITerm = 0.0f;
