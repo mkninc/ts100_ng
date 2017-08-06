@@ -34,17 +34,7 @@ int main(void) {
 		Heater_Execute(&heater);
 		ProcessUI();
 		Graph_Clear();
-#ifndef SIMULATION_BOARD
 		DrawUI();
-#else
-		for(u32 x= 0; x < 96; x++)
-		{
-			for(u32 y = 0; y < 16; y++)
-			{
-				Graph_DrawPixel(x, y, 0xFF);
-			}
-		}
-#endif
 		Graph_Update();
 		//delayMs(50); //Slow the system down a little bit
 		if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_5) == Bit_RESET) {

@@ -55,8 +55,21 @@ void Graph_DrawPixel(u32 const x, u32 const y, u32 const value) {
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void Graph_DrawArea(u32 const x, u32 const y, u32 const width, u32 const height,
+void Graph_DrawArea(u32 const x0, u32 const y0, u32 const width, u32 const height,
 		u8 const * data) {
+	u32 row;
+	u8 pixel;
+
+for(u32 x = 0; x < width; x++)
+{
+	for(u32 y = 0; y < height; y++)
+	{
+		row = (y / 8);
+		pixel = 1 << (y % 8);
+
+		Graph_DrawPixel(x + x0, y + y0, data[x + row * width] & pixel);
+	}
+}
 
 }
 //-----------------------------------------------------------------------------
