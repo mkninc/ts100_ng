@@ -5,6 +5,8 @@
  *      Author: Marco
  */
 
+#include "config.h"
+
 #include "stm32f10x.h"
 
 #include "S100V0_1.h"
@@ -20,7 +22,7 @@ void Heater_Init(HEATER_INST * const inst)
 	TIM_OCInitTypeDef tTimerOCConfig;
 
 	inst->cycleTimeMS = 100;
-	inst->dutyCycle = 0.0f;
+	inst->dutyCycle = 0;
 
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 
@@ -61,12 +63,7 @@ void Heater_Execute(HEATER_INST * const inst)
 	uint32_t measureDelay;
 	uint32_t avgSum;
 
-	if(inst->dutyCycle < 0.0f)
-		inst->dutyCycle = 0.0f;
-	if(inst->dutyCycle > 1.0f)
-		inst->dutyCycle = 1.0f;
-
-	timeOn = inst->cycleTimeMS * inst->dutyCycle + 0.5f;
+	timeOn =  FIXPOINT_DIVROUND(inst->cycleTimeMS * inst->dutyCycle); //    (inst->cycleTimeMS * (inst->dutyCycle + 5)) / FIXPOINT_FACTOR;
 	timeOff = inst->cycleTimeMS - timeOn;
 
 	Heater_Resume(inst);
@@ -103,20 +100,29 @@ void Heater_Resume(HEATER_INST * const inst)
 	TIM_CCxCmd(TIM3, TIM_Channel_1, TIM_CCx_Enable);
 }
 
-void Heater_SetDutyCycle(HEATER_INST * const inst, float const dutyCycle)
+void Heater_SetDutyCycle(HEATER_INST * const inst, int32_t const dutyCycle)
 {
 inst->dutyCycle = dutyCycle;
+
+if(inst->dutyCycle < 0)
+	inst->dutyCycle = 0;
+
+if(inst->dutyCycle > FIXPOINT_FACTOR)
+	inst->dutyCycle = FIXPOINT_FACTOR;
 }
 
-float Heater_GetDutyCycle(HEATER_INST * const inst)
+int32_t Heater_GetDutyCycle(HEATER_INST * const inst)
 {
 return inst->dutyCycle;
 }
 
 uint16_t Heater_GetCurrentTemperature(HEATER_INST * const inst)
 {
-
+#ifdef SIMULATION_BOARD
+	return 2900;
+#else
 	return inst->currentTemperature;
+#endif
 }
 
 void Heater_SetCalibrationValue(HEATER_INST * const inst, uint16_t const calibrationValue)

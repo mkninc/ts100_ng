@@ -4,6 +4,7 @@
  *  Created on: 17 Sep 2016
  *      Author: Ralim <ralim@ralimtek.com>
  */
+#include "config.h"
 #include "main.h"
 
 #include "graphbuffer.h"
@@ -28,7 +29,7 @@ settingsPageEnum settingsPage;
 
 //This does the required processing and state changes
 void ProcessUI() {
-	float newOutput;
+	uint32_t newOutput;
 	uint16_t voltage;
 	uint8_t Buttons = getButtons(); //read the buttons status
 	static uint32_t lastModeChange = 0;
@@ -389,6 +390,7 @@ void DrawUI(void) {
 	static uint16_t lastSolderingDrawnTemp2 = 0;
 	uint8_t lengthLeft;
 	uint32_t tempavg;
+	uint32_t lengthPBar;
 
 	static uint8_t settingsLongTestScrollPos = 0;
 	uint16_t temp = Heater_GetCurrentTemperature(&heater); //  readIronTemp(0, 0, 0xFFFF);
@@ -469,8 +471,8 @@ void DrawUI(void) {
 		}
 
 		// draw power bar
-		u32 length = Heater_GetDutyCycle(&heater) * 95;
-		Graph_DrawHorizontalBar(0, 15, length);
+		lengthPBar = FIXPOINT_DIVROUND(Heater_GetDutyCycle(&heater) * 95);
+		Graph_DrawHorizontalBar(0, 15, lengthPBar);
 
 	}
 		break;

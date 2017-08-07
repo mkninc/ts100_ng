@@ -13,7 +13,7 @@
 
 typedef struct
 {
-	float dutyCycle;
+	int32_t dutyCycle;
 	uint32_t cycleTimeMS;
 	uint32_t rawTemperature;
 	uint32_t currentTemperature;
@@ -29,9 +29,9 @@ extern void Heater_Suspend(HEATER_INST * const inst);
 
 extern void Heater_Resume(HEATER_INST * const inst);
 
-extern void Heater_SetDutyCycle(HEATER_INST * const inst, float const dutyCycle);
+extern void Heater_SetDutyCycle(HEATER_INST * const inst, int32_t const dutyCycle);
 
-extern float Heater_GetDutyCycle(HEATER_INST * const inst);
+extern int32_t Heater_GetDutyCycle(HEATER_INST * const inst);
 
 extern uint16_t Heater_GetCurrentTemperature(HEATER_INST * const inst);
 
