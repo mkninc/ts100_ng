@@ -4,7 +4,7 @@
  *  Created on: 20 Sep 2016
  *      Author: ralim
  */
-
+#include "config.h"
 #include "PID.h"
 
 
@@ -12,32 +12,32 @@ pidSettingsType pidSettings;
 
 #define MAXPIDOUTPUT 50000
 
-static float ITerm;
+static int32_t ITerm;
 
 //This function computes the new value for the ON time of the system
 //This is the return value from this function
-float computePID(uint16_t const currentValue, uint16_t setpoint) {
-	int16_t DInput;
-	float output;
+int32_t computePID(uint16_t const currentValue, uint16_t setpoint) {
+	int32_t DInput;
+	int32_t output;
 
 	static int16_t lastReading = 0;
-	uint16_t currentReading = currentValue; //get the current temp of the iron
-	float error = ((float)setpoint - (float)currentReading) / 10.0f; //calculate the error term
+	int32_t currentReading = currentValue; //get the current temp of the iron
+	int32_t error = (setpoint - currentReading) * 1000; //calculate the error term
 
-	output = (pidSettings.kp * error);
+	output = FIXPOINT_DIVROUND(pidSettings.kp * error); //  ((pidSettings.kp * error) / FIXPOINT_FACTOR);
 
-	if(output < 1.0f)
+	if(output < FIXPOINT_FACTOR)
 	{
-		ITerm += (pidSettings.ki * error);
+		ITerm += FIXPOINT_DIVROUND(pidSettings.ki * error);  // ((pidSettings.ki * error) / FIXPOINT_FACTOR);
 	}
 
-	if (ITerm > 0.5f)
-		ITerm = 0.5f;
-	else if (ITerm < 0.0f)
-		ITerm = 0.0f; //cap at 0 since we cant force the iron to cool itself :)
+	if (ITerm > (FIXPOINT_FACTOR / 2))  // TODO: check limit
+		ITerm = (FIXPOINT_FACTOR / 2);
+	else if (ITerm < 0)
+		ITerm = 0; //cap at 0 since we cant force the iron to cool itself :)
 
-	DInput = (currentReading - lastReading); //compute the input to the D term
-	output += (ITerm) - (pidSettings.kd * DInput);
+	DInput = (currentReading - lastReading) * 1000; //compute the input to the D term
+	output += (ITerm) - FIXPOINT_DIVROUND(pidSettings.kd * DInput);
 
 	lastReading = currentReading; //storing values for next iteration of the loop
 	return output;
@@ -46,9 +46,9 @@ float computePID(uint16_t const currentValue, uint16_t setpoint) {
 
 /*Sets up the pid values*/
 void setupPID(void) {
-	pidSettings.kp = 0.01f; // 15;
-	pidSettings.ki = 0.001f; // 2;
-	pidSettings.kd = 0.0f; //3;
+	pidSettings.kp = 100; // 15;
+	pidSettings.ki = 10; // 2;
+	pidSettings.kd = 0; //3;
 
-	ITerm = 0.0f;
+	ITerm = 0;
 }

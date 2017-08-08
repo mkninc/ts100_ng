@@ -19,8 +19,10 @@ void Graphic_Init(void) {
 
 //-----------------------------------------------------------------------------
 void Graph_Update(void) {
+#ifndef SIMULATION_BOARD
 	Oled_DrawArea(0, 0, 96, 8, &gr_buffer[0][0]);
 	Oled_DrawArea(0, 8, 96, 8, &gr_buffer[1][0]);
+#endif
 }
 //-----------------------------------------------------------------------------
 

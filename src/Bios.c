@@ -2,7 +2,7 @@
  * Setup all the basic hardware in the system and handle timer3 tick
  */
 #include "I2C.h"
-
+#include "config.h"
 #include "Heater.h"
 #include "main.h"
 #include "Bios.h"
@@ -275,9 +275,9 @@ void TIM3_ISR(void) {
 
 }
 
-void setIronTimer(float time) {
-	gHeat_cnt = time;
-	Heater_SetDutyCycle(&heater, time );
+void setIronTimer(uint32_t time) {
+	gHeat_cnt = FIXPOINT_DIVROUND(50000 * time);
+	Heater_SetDutyCycle(&heater, time);
 }
 
 uint32_t getIronTimer() {

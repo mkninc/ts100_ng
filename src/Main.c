@@ -18,7 +18,7 @@ HEATER_INST heater;
 
 
 int main(void) {
-	float dummy = 0.0f;
+	//float dummy = 0.0f;
 
 	setup();/*Setup the system*/
 	while (1) {
