@@ -17,11 +17,11 @@ static int32_t ITerm;
 //This function computes the new value for the ON time of the system
 //This is the return value from this function
 int32_t computePID(uint16_t const currentValue, uint16_t setpoint) {
-	int16_t DInput;
+	int32_t DInput;
 	int32_t output;
 
 	static int16_t lastReading = 0;
-	int16_t currentReading = currentValue; //get the current temp of the iron
+	int32_t currentReading = currentValue; //get the current temp of the iron
 	int32_t error = (setpoint - currentReading) * 1000; //calculate the error term
 
 	output = FIXPOINT_DIVROUND(pidSettings.kp * error); //  ((pidSettings.kp * error) / FIXPOINT_FACTOR);

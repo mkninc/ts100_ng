@@ -457,7 +457,7 @@ void DrawUI(void) {
 			//Cooling
 			OLED_DrawSymbol(6, 5);
 		} else {
-			if (getIronTimer() < 1500) {
+			if (getIronTimer() < 3000) {
 				//Maintaining
 				OLED_DrawSymbol(6, 7);
 			} else {		//we are heating
