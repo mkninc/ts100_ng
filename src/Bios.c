@@ -10,7 +10,6 @@
 
 
 #define ADC1_DR_Address    ((u32)0x4001244C)
-volatile uint32_t gHeat_cnt = 0;
 
 /*
  * Setup system clocks to run off internal oscillator at 48Mhz
@@ -252,34 +251,3 @@ void Clear_Watchdog(void) {
 	IWDG_ReloadCounter();
 }
 
-//TIM3_ISR handles the tick of the timer 3 IRQ
-void TIM3_ISR(void) {
-	volatile static u8 heat_flag = 0;
-	//heat flag == used to make the pin toggle
-	//As the output is passed through a cap, the iron is on whilever we provide a square wave drive output
-
-	TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
-	// Clear interrupt flag
-
-	if (gHeat_cnt > 0) {
-		--gHeat_cnt;
-		if (heat_flag)
-			HEAT_OFF();	//write the pin off
-		else
-			HEAT_ON();	//write the pin on
-		heat_flag = !heat_flag;
-	} else {
-		HEAT_OFF();	//set the pin low for measurements
-		heat_flag = 0;
-	}
-
-}
-
-void setIronTimer(uint32_t time) {
-	gHeat_cnt = FIXPOINT_DIVROUND(50000 * time);
-	Heater_SetDutyCycle(&heater, time);
-}
-
-uint32_t getIronTimer() {
-	return gHeat_cnt;
-}

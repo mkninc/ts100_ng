@@ -47,7 +47,6 @@ void SysTick_Handler(void) {
 /*Peripheral Interrupts				*/
 
 void TIM3_IRQHandler(void) {
-	TIM3_ISR();
 }
 
 //EXTI IRQ handler

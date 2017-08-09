@@ -89,7 +89,7 @@ void ProcessUI() {
 			}
 			//Update the PID Loop
 			newOutput = computePID(Heater_GetCurrentTemperature(&heater), systemSettings.SolderingTemp);
-			setIronTimer(newOutput);
+			Heater_SetDutyCycle(&heater, newOutput);
 		} else {
 			if (StatusFlags == 8) {
 				//Boost mode was enabled before
@@ -114,7 +114,7 @@ void ProcessUI() {
 			}
 			//Update the PID Loop
 			newOutput = computePID(Heater_GetCurrentTemperature(&heater), systemSettings.SolderingTemp);
-			setIronTimer(newOutput);
+			Heater_SetDutyCycle(&heater, newOutput);
 		}
 		break;
 	case TEMP_ADJ:
@@ -248,10 +248,10 @@ void ProcessUI() {
 		}
 		//else if nothing has been pushed we need to compute the PID to keep the iron at the sleep temp
 		newOutput = computePID(Heater_GetCurrentTemperature(&heater), systemSettings.SleepTemp);
-		setIronTimer(newOutput);
+		Heater_SetDutyCycle(&heater, newOutput);
 		break;
 	case COOLING: {
-		setIronTimer(0); //turn off heating
+		Heater_SetDutyCycle(&heater, 0); //turn off heating
 		//This mode warns the user the iron is still cooling down
 		if (Buttons & (BUT_A | BUT_B)) { //we check if the user has pushed a button to exit
 			//Either button was pushed
@@ -395,6 +395,7 @@ void DrawUI(void) {
 	uint8_t lengthLeft;
 	uint32_t tempavg;
 	uint32_t lengthPBar;
+	int32_t currentDutyCycle;
 
 	static uint8_t settingsLongTestScrollPos = 0;
 	uint16_t temp = Heater_GetCurrentTemperature(&heater); //  readIronTemp(0, 0, 0xFFFF);
@@ -456,12 +457,13 @@ void DrawUI(void) {
 			OLED_DrawChar(' ', 5);
 		}
 		OLED_BlankSlot(6 * 12 + 16, 24 - 16);//blank out the tail after the arrows
-		if (getIronTimer() == 0
+		currentDutyCycle = Heater_GetDutyCycle(&heater);
+		if (currentDutyCycle == 0
 				&& (temp / 10) > (systemSettings.SolderingTemp / 10)) {
 			//Cooling
 			OLED_DrawSymbol(6, 5);
 		} else {
-			if (getIronTimer() < 3000) {
+			if (currentDutyCycle < 3000) {
 				//Maintaining
 				OLED_DrawSymbol(6, 7);
 			} else {		//we are heating

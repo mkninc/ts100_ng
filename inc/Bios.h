@@ -15,16 +15,7 @@
 #include "stm32f10x_exti.h"
 #include "stm32f10x_iwdg.h"
 #include "misc.h"
-extern volatile uint32_t gHeat_cnt;
 
-extern void setIronTimer(uint32_t time);
-
-extern uint32_t getIronTimer(void);
-
-
-/*Get set the remaining toggles of the heater output*/
-extern u32 Get_HeatingTime(void);
-extern void Set_HeatingTime(u32 heating_time);
 
 extern void Init_Gtime(void);
 extern void USB_Port(u8 state);
