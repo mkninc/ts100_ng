@@ -340,6 +340,10 @@ void ProcessUI() {
 		} else if (Buttons == BUT_A) {
 			//Try and calibrate
 			if (StatusFlags == 0) {
+				for(int32_t i = 0; i < 10; i++)
+				{
+					Heater_Execute(&heater);
+				}
 				if ((Heater_GetCurrentTemperature(&heater) < 300) && (readSensorTemp() < 300)) {
 					StatusFlags = 1;
 					systemSettings.tempCalibration = Heater_GetCurrentTemperature(&heater);
