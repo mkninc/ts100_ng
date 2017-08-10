@@ -67,7 +67,6 @@ SOURCE_CPP=
 
 
 # Verzeichnisse ----------------------------------------------------------------
-GCC_DIR=H:/development/armgcc/6_2017-q2-update/bin
 MCUAPI_DIR=StdPeriph_Driver
 RTOS_DIR=lib/FreeRTOS/Source
 

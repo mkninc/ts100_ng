@@ -1,0 +1,16 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+before_script:
+- export GCC_DIR="/wbin/opt/gcc-arm-none-eabi-6-2017-q2-update/bin"
+
+stages:
+- build
+
+build:
+  stage: build
+  script:
+    - make clean
+    - make all
+  tags:
+    - armgcc
