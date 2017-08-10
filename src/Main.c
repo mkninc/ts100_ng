@@ -12,6 +12,8 @@
 #include "Heater.h"
 #include "graphbuffer.h"
 
+#include "FreeRTOS.h"
+
 void setup(void);
 
 HEATER_INST heater;

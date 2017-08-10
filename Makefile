@@ -40,7 +40,16 @@ SOURCE=$(APP_SOURCE_DIR)/startup.c \
 		$(MCUAPI_DIR)/src/stm32f10x_spi.c \
 		$(MCUAPI_DIR)/src/stm32f10x_tim.c \
 		$(MCUAPI_DIR)/src/stm32f10x_usart.c \
-		$(MCUAPI_DIR)/src/stm32f10x_wwdg.c
+		$(MCUAPI_DIR)/src/stm32f10x_wwdg.c \
+		$(RTOS_DIR)/timers.c \
+		$(RTOS_DIR)/tasks.c \
+		$(RTOS_DIR)/queue.c \
+		$(RTOS_DIR)/list.c \
+		$(RTOS_DIR)/event_groups.c \
+		$(RTOS_DIR)/croutine.c \
+		$(RTOS_DIR)/portable/MemMang/heap_1.c \
+		$(RTOS_DIR)/portable/GCC/ARM_CM3/port.c
+		
 		
 
 		
@@ -60,7 +69,7 @@ SOURCE_CPP=
 # Verzeichnisse ----------------------------------------------------------------
 GCC_DIR=H:/development/armgcc/6_2017-q2-update/bin
 MCUAPI_DIR=StdPeriph_Driver
-RTOS_DIR=FreeRTOS/Source
+RTOS_DIR=lib/FreeRTOS/Source
 
 # Bibliotheken
 DRV_LIB=$(MCUAPI_DIR)/driverlib
@@ -153,6 +162,7 @@ INCLUDES=-I$(APP_INC_DIR) \
 		-isystemStdPeriph_Driver/inc \
 		-isystemCMSIS/device \
 		-isystemCMSIS/core \
+		-isystem$(RTOS_DIR)/include
 
 CHECKOPTIONS=-pedantic 			\
 			-Wall 				\
