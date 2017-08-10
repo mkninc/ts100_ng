@@ -22,13 +22,13 @@ int32_t computePID(uint16_t const currentValue, uint16_t setpoint) {
 
 	static int16_t lastReading = 0;
 	int32_t currentReading = currentValue; //get the current temp of the iron
-	int32_t error = (setpoint - currentReading) * 1000; //calculate the error term
+	pidSettings.currentError = (setpoint - currentReading) * 1000; //calculate the error term
 
-	output = FIXPOINT_DIVROUND(pidSettings.kp * error); //  ((pidSettings.kp * error) / FIXPOINT_FACTOR);
+	output = FIXPOINT_DIVROUND(pidSettings.kp * pidSettings.currentError); //  ((pidSettings.kp * error) / FIXPOINT_FACTOR);
 
 	if(output < FIXPOINT_FACTOR)
 	{
-		ITerm += FIXPOINT_DIVROUND(pidSettings.ki * error);  // ((pidSettings.ki * error) / FIXPOINT_FACTOR);
+		ITerm += FIXPOINT_DIVROUND(pidSettings.ki * pidSettings.currentError);  // ((pidSettings.ki * error) / FIXPOINT_FACTOR);
 	}
 
 	if (ITerm > (FIXPOINT_FACTOR / 2))  // TODO: check limit
@@ -51,4 +51,8 @@ void setupPID(void) {
 	pidSettings.kd = 0; //3;
 
 	ITerm = 0;
+}
+
+int32_t PID_GetError(void) {
+return pidSettings.currentError;
 }

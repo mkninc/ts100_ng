@@ -6,6 +6,7 @@
  */
 #include "config.h"
 #include "main.h"
+#include <stdlib.h>
 
 #include "graphbuffer.h"
 
@@ -395,7 +396,7 @@ void DrawUI(void) {
 	uint8_t lengthLeft;
 	uint32_t tempavg;
 	uint32_t lengthPBar;
-	int32_t currentDutyCycle;
+	int32_t currentError;
 
 	static uint8_t settingsLongTestScrollPos = 0;
 	uint16_t temp = Heater_GetCurrentTemperature(&heater); //  readIronTemp(0, 0, 0xFFFF);
@@ -456,19 +457,17 @@ void DrawUI(void) {
 		} else {
 			OLED_DrawChar(' ', 5);
 		}
-		OLED_BlankSlot(6 * 12 + 16, 24 - 16);//blank out the tail after the arrows
-		currentDutyCycle = Heater_GetDutyCycle(&heater);
-		if (currentDutyCycle == 0
-				&& (temp / 10) > (systemSettings.SolderingTemp / 10)) {
+		OLED_BlankSlot(6 * 12 + 16, 24 - 16); //blank out the tail after the arrows
+		currentError = PID_GetError();
+		if (abs(currentError) < (int32_t)(FIXPOINT_FACTOR * 1.5)) {
+			//Maintaining
+			OLED_DrawSymbol(6, 7);
+		} else if (currentError > 0) {
+			//we are heating
+			OLED_DrawSymbol(6, 6);
+		} else {
 			//Cooling
 			OLED_DrawSymbol(6, 5);
-		} else {
-			if (currentDutyCycle < 3000) {
-				//Maintaining
-				OLED_DrawSymbol(6, 7);
-			} else {		//we are heating
-				OLED_DrawSymbol(6, 6);
-			}
 		}
 		if (systemSettings.displayTempInF) {
 			OLED_DrawChar('F', 3);
