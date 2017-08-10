@@ -1,0 +1,4 @@
+[submodule "lib/FreeRTOS"]
+	path = lib/FreeRTOS
+	url = ../FreeRTOS
+	branch = master
