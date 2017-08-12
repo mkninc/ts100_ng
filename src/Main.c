@@ -13,16 +13,17 @@
 #include "graphbuffer.h"
 
 #include "FreeRTOS.h"
+#include "task.h"
 
 void setup(void);
 
 HEATER_INST heater;
 
-
-int main(void) {
-	//float dummy = 0.0f;
+//-----------------------------------------------------------------------------
+static void MainTask(void * pvParameters) {
 
 	setup();/*Setup the system*/
+
 	while (1) {
 #ifndef SIMULATION_BOARD
 		Clear_Watchdog(); //reset the Watch dog timer
@@ -46,9 +47,32 @@ int main(void) {
 
 	}
 }
-void setup(void) {
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+static void setupSystem(void) {
 	RCC_Config(); 										//setup system clock
 	NVIC_Config(0x4000); //this shifts the NVIC table to be offset, for the usb bootloader's size
+
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+int main(void) {
+	//float dummy = 0.0f;
+
+	setupSystem();
+
+	xTaskCreate(MainTask, "Main", configMINIMAL_STACK_SIZE, NULL,
+			tskIDLE_PRIORITY + 1, NULL);
+
+	vTaskStartScheduler();
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+void setup(void) {
+
 	GPIO_Config(); 									//setup all the GPIO pins
 	Init_EXTI(); 										//Init the EXTI inputs
 	//Init_Timer3(); 							//Used for the soldering iron tip
@@ -77,3 +101,4 @@ void setup(void) {
 	Start_Watchdog(1000); 		//start the system watch dog as 1 second timeout
 #endif
 }
+//-----------------------------------------------------------------------------

@@ -8,6 +8,7 @@
 #ifndef INC_CONFIG_H_
 #define INC_CONFIG_H_
 
+//#define ISR_FAULT_DEBUG
 
 #define FIXPOINT_FACTOR		(10000)
 
