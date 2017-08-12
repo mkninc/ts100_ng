@@ -13,7 +13,6 @@
 #include "Interrupt.h"
 #include "S100V0_1.h"
 #include "Oled.h"
-#include "PID.h"
 #include "Settings.h"
 #include "Analog.h"
 #include <string.h>
@@ -29,7 +28,6 @@ typedef enum {
 	THERMOMETER,	//Read the tip temp
 	DCINDISP,		//Disp the input voltage && Cal the DCin voltage divider
 	TEMPCAL,		//Cal tip temp offset
-
 } operatingModeEnum;
 
 #define SETTINGSOPTIONSCOUNT 10 /*Number of settings in the settings menu*/

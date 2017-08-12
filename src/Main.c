@@ -2,6 +2,7 @@
  * Created by Ben V. Brown
  */
 
+#include <stdbool.h>
 #include "Modes.h"
 #include "Bios.h"
 #include "MMA8652FC.h"
@@ -18,11 +19,14 @@
 void setup(void);
 
 HEATER_INST heater;
+volatile uint32_t systemReady;
 
 //-----------------------------------------------------------------------------
 static void MainTask(void * pvParameters) {
 
 	setup();/*Setup the system*/
+
+	systemReady = true;
 
 	while (1) {
 #ifndef SIMULATION_BOARD
@@ -35,16 +39,31 @@ static void MainTask(void * pvParameters) {
 //			dummy = 0.0f;
 #endif
 		Heater_Execute(&heater);
+	}
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+static void UITask(void * pvParameters) {
+	TickType_t previousWakeTime;
+
+	while(!systemReady);
+
+	previousWakeTime = xTaskGetTickCount();
+
+	while (1) {
+
 		ProcessUI();
 		Graph_Clear();
 		DrawUI();
 		Graph_Update();
-		//delayMs(50); //Slow the system down a little bit
+
 		if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_5) == Bit_RESET) {
 			lastMovement = millis();
 			//This is a workaround for the line staying low as the user is still moving. (ie sensitivity is too high for their amount of movement)
 		}
 
+		vTaskDelayUntil(&previousWakeTime, pdMS_TO_TICKS(50));
 	}
 }
 //-----------------------------------------------------------------------------
@@ -59,12 +78,15 @@ static void setupSystem(void) {
 
 //-----------------------------------------------------------------------------
 int main(void) {
-	//float dummy = 0.0f;
+	systemReady = false;
 
 	setupSystem();
 
-	xTaskCreate(MainTask, "Main", configMINIMAL_STACK_SIZE, NULL,
-			tskIDLE_PRIORITY + 1, NULL);
+	xTaskCreate(MainTask, "HeaterControl", configMINIMAL_STACK_SIZE, NULL,
+			tskIDLE_PRIORITY + 2, NULL);
+
+	xTaskCreate(UITask, "UI", configMINIMAL_STACK_SIZE, NULL,
+				tskIDLE_PRIORITY + 1, NULL);
 
 	vTaskStartScheduler();
 }

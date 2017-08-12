@@ -17,17 +17,27 @@ typedef struct
 	uint32_t cycleTimeMS;
 	uint32_t rawTemperature;
 	uint32_t currentTemperature;
+	uint32_t setTemperature;
 	uint16_t temperatureCalibrationValue;
-
 }HEATER_INST;
+
+typedef enum {
+	eHeaterStatusMaintain,
+	eHeaterStatusHeating,
+	eHeaterStatusCooling,
+}HEATER_STATUS;
 
 extern void Heater_Init(HEATER_INST * const inst);
 
+extern void Heater_SetTemperature(HEATER_INST * const inst, int32_t const targetTemperature);
+
+extern HEATER_STATUS Heater_GetStatus(HEATER_INST * const inst);
+
 extern void Heater_Execute(HEATER_INST * const inst);
 
-extern void Heater_Suspend(HEATER_INST * const inst);
+extern void Heater_DisablePWM(HEATER_INST * const inst);
 
-extern void Heater_Resume(HEATER_INST * const inst);
+extern void Heater_EnablePWM(HEATER_INST * const inst);
 
 extern void Heater_SetDutyCycle(HEATER_INST * const inst, int32_t const dutyCycle);
 

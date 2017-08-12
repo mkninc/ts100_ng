@@ -6,12 +6,16 @@
  */
 
 #include "config.h"
-
+#include <stdlib.h>
 #include "stm32f10x.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
 
 #include "S100V0_1.h"
 #include "Interrupt.h"
 #include "Analog.h"
+#include "PID.h"
 
 #include "Heater.h"
 
@@ -23,6 +27,7 @@ void Heater_Init(HEATER_INST * const inst)
 
 	inst->cycleTimeMS = 100;
 	inst->dutyCycle = 0;
+	inst->setTemperature = 0;
 
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 
@@ -55,26 +60,48 @@ void Heater_Init(HEATER_INST * const inst)
 
     TIM_CtrlPWMOutputs(TIM3, ENABLE);
 }
+//-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
+void Heater_SetTemperature(HEATER_INST * const inst, int32_t const targetTemperature) {
+	inst->setTemperature = targetTemperature;
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+HEATER_STATUS Heater_GetStatus(HEATER_INST * const inst) {
+	int32_t currentError = PID_GetError();
+	if (abs(currentError) < (int32_t)(FIXPOINT_FACTOR * 1.5)) {
+		return eHeaterStatusMaintain;
+	} else if (currentError > 0) {
+		return eHeaterStatusHeating;
+	} else {
+		return eHeaterStatusCooling;
+	}
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 void Heater_Execute(HEATER_INST * const inst)
 {
 	uint32_t timeOn;
 	uint32_t timeOff;
 	uint32_t measureDelay;
 	uint32_t avgSum;
+	int32_t newOutput;
 
 	timeOn =  FIXPOINT_DIVROUND(inst->cycleTimeMS * inst->dutyCycle); //    (inst->cycleTimeMS * (inst->dutyCycle + 5)) / FIXPOINT_FACTOR;
 	timeOff = inst->cycleTimeMS - timeOn;
 
-	Heater_Resume(inst);
-	delayMs(timeOn);
-	Heater_Suspend(inst);
-	delayMs(timeOff);
+	Heater_EnablePWM(inst);
+	vTaskDelay(timeOn);
+	Heater_DisablePWM(inst);
+	vTaskDelay(timeOff);
 
 	if(timeOff < 5)
 	{
 		measureDelay = 5 - timeOff;
-		delayMs(measureDelay);
+		vTaskDelay(measureDelay);
 	}
 
 	avgSum = 0;
@@ -87,19 +114,26 @@ void Heater_Execute(HEATER_INST * const inst)
 
 	inst->currentTemperature = Heater_ConvertCalibrateTemperature(inst, inst->rawTemperature);
 
+	newOutput = computePID(Heater_GetCurrentTemperature(inst), inst->setTemperature);
+	Heater_SetDutyCycle(inst, newOutput);
 }
+//-----------------------------------------------------------------------------
 
-
-void Heater_Suspend(HEATER_INST * const inst)
+//-----------------------------------------------------------------------------
+void Heater_DisablePWM(HEATER_INST * const inst)
 {
 	TIM_CCxCmd(TIM3, TIM_Channel_1, TIM_CCx_Disable);
 }
+//-----------------------------------------------------------------------------
 
-void Heater_Resume(HEATER_INST * const inst)
+//-----------------------------------------------------------------------------
+void Heater_EnablePWM(HEATER_INST * const inst)
 {
 	TIM_CCxCmd(TIM3, TIM_Channel_1, TIM_CCx_Enable);
 }
+//-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
 void Heater_SetDutyCycle(HEATER_INST * const inst, int32_t const dutyCycle)
 {
 inst->dutyCycle = dutyCycle;
