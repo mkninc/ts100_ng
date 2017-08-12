@@ -14,3 +14,6 @@ build:
     - make all
   tags:
     - armgcc
+  artifacts:
+    paths:
+      - Hexfile/TS100_NG.hex
