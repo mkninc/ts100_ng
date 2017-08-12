@@ -8,7 +8,6 @@
 #include <stdint.h>
 
 /* Functions for access to data */
-extern volatile uint32_t system_Ticks;
 void delayMs(uint32_t ticks);
 volatile extern uint32_t lastKeyPress;
 volatile extern uint32_t lastMovement;
