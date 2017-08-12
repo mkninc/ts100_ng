@@ -15,5 +15,7 @@ build:
   tags:
     - armgcc
   artifacts:
+    expire_in:
+      4 weeks
     paths:
       - Hexfile/TS100_NG.hex
