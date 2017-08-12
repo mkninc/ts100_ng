@@ -41,15 +41,15 @@ void RCC_Config(void) {
 
 	RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_Div1);       // USBCLK = 48MHz
 
-	RCC_GetClocksFreq(&RCC_Clocks);
-	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000); //Enable the systick timer at 1ms
+	//RCC_GetClocksFreq(&RCC_Clocks);
+	//SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000); //Enable the systick timer at 1ms
 }
 /*
  * Shift the NVIC (Interrupt table) location relative to flash start
  */
 void NVIC_Config(u16 tab_offset) {
 	NVIC_SetVectorTable(NVIC_VectTab_FLASH, tab_offset);
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 }
 /*
  * Setup the GPIO

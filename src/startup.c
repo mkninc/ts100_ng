@@ -1,5 +1,5 @@
-//#include "config.h"
-//#include "FreeRTOS.h"
+#include "config.h"
+#include "FreeRTOS.h"
 #include "main.h"
 #include "Interrupt.h"
 
@@ -48,11 +48,11 @@ void (* const g_pfnVectors[])(void) =
 		0,
 		0,
 		0,
-		SVC_Handler,
+		vPortSVCHandler,
 		DebugMon_Handler,
 		0,
-		PendSV_Handler,
-		SysTick_Handler,
+		xPortPendSVHandler,
+		xPortSysTickHandler,
 		WWDG_IRQHandler,
 		PVD_IRQHandler,
 		TAMPER_IRQHandler,

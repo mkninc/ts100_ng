@@ -1,8 +1,11 @@
-#include "Interrupt.h"
 #include "Bios.h"
 #include "I2C.h"
 
-volatile uint32_t system_Ticks;
+#include "FreeRTOS.h"
+#include "task.h"
+
+#include "Interrupt.h"
+
 volatile uint32_t lastKeyPress; //millis() at the last button event
 volatile uint8_t keyState; //tracks the button status
 volatile uint8_t rawKeys;
@@ -10,9 +13,7 @@ volatile uint32_t lastMovement; //millis() at last movement event
 
 //Delay in milliseconds using systemTick
 void delayMs(uint32_t ticks) {
-	uint32_t endtime = ticks + millis();
-	while (millis() < endtime)
-		;
+	vTaskDelay(ticks);
 }
 
 void NMI_Handler(void) {
@@ -41,7 +42,6 @@ void UsageFault_Handler(void) {
 
 //Handles the tick of the sysTick events
 void SysTick_Handler(void) {
-	++system_Ticks;
 }
 
 /*Peripheral Interrupts				*/
@@ -61,7 +61,7 @@ void EXTI9_5_IRQHandler(void) {
 		} else {
 			keyState |= BUT_A;
 			rawKeys |= BUT_A;
-			lastKeyPress = millis();
+			lastKeyPress = xTaskGetTickCountFromISR();
 		}
 		EXTI_ClearITPendingBit(EXTI_Line9);
 	} else if (EXTI_GetITStatus(EXTI_Line6) != RESET) {
@@ -71,11 +71,11 @@ void EXTI9_5_IRQHandler(void) {
 		} else {
 			keyState |= BUT_B;
 			rawKeys |= BUT_B;
-			lastKeyPress = millis();
+			lastKeyPress = xTaskGetTickCountFromISR();
 		}
 		EXTI_ClearITPendingBit(EXTI_Line6);
 	} else if (EXTI_GetITStatus(EXTI_Line5) != RESET) {	//Movement Event
-		lastMovement = millis();
+		lastMovement = xTaskGetTickCountFromISR();
 		EXTI_ClearITPendingBit(EXTI_Line5);
 	}
 
@@ -213,7 +213,7 @@ void USB_LP_CAN1_RX0_IRQHandler(void) {
 
 
 uint32_t millis() {
-	return system_Ticks;
+	return xTaskGetTickCount();
 }
 
 uint32_t getLastButtonPress() {
