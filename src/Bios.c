@@ -40,9 +40,6 @@ void RCC_Config(void) {
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3, ENABLE);
 
 	RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_Div1);       // USBCLK = 48MHz
-
-	//RCC_GetClocksFreq(&RCC_Clocks);
-	//SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000); //Enable the systick timer at 1ms
 }
 /*
  * Shift the NVIC (Interrupt table) location relative to flash start
