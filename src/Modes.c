@@ -88,9 +88,8 @@ void ProcessUI() {
 				temporaryTempStorage = systemSettings.SolderingTemp;
 				systemSettings.SolderingTemp = systemSettings.BoostTemp;
 			}
-			//Update the PID Loop
-			newOutput = computePID(Heater_GetCurrentTemperature(&heater), systemSettings.SolderingTemp);
-			Heater_SetDutyCycle(&heater, newOutput);
+			//Update target temperature
+			Heater_SetTemperature(&heater, systemSettings.SolderingTemp);
 		} else {
 			if (StatusFlags == 8) {
 				//Boost mode was enabled before
@@ -113,9 +112,8 @@ void ProcessUI() {
 				operatingMode = UVLOWARN;
 				lastModeChange = millis();
 			}
-			//Update the PID Loop
-			newOutput = computePID(Heater_GetCurrentTemperature(&heater), systemSettings.SolderingTemp);
-			Heater_SetDutyCycle(&heater, newOutput);
+			//Update target temperature
+			Heater_SetTemperature(&heater, systemSettings.SolderingTemp);
 		}
 		break;
 	case TEMP_ADJ:
@@ -248,11 +246,10 @@ void ProcessUI() {
 			}
 		}
 		//else if nothing has been pushed we need to compute the PID to keep the iron at the sleep temp
-		newOutput = computePID(Heater_GetCurrentTemperature(&heater), systemSettings.SleepTemp);
-		Heater_SetDutyCycle(&heater, newOutput);
+		Heater_SetTemperature(&heater, systemSettings.SleepTemp);
 		break;
 	case COOLING: {
-		Heater_SetDutyCycle(&heater, 0); //turn off heating
+		Heater_SetTemperature(&heater, -FIXPOINT_FACTOR * 200); //turn off heating TODO: implement Heater control modes
 		//This mode warns the user the iron is still cooling down
 		if (Buttons & (BUT_A | BUT_B)) { //we check if the user has pushed a button to exit
 			//Either button was pushed
@@ -458,17 +455,20 @@ void DrawUI(void) {
 			OLED_DrawChar(' ', 5);
 		}
 		OLED_BlankSlot(6 * 12 + 16, 24 - 16); //blank out the tail after the arrows
-		currentError = PID_GetError();
-		if (abs(currentError) < (int32_t)(FIXPOINT_FACTOR * 1.5)) {
-			//Maintaining
+
+		// draw heater status
+		switch (Heater_GetStatus(&heater)) {
+		case eHeaterStatusMaintain:
 			OLED_DrawSymbol(6, 7);
-		} else if (currentError > 0) {
-			//we are heating
+			break;
+		case eHeaterStatusHeating:
 			OLED_DrawSymbol(6, 6);
-		} else {
-			//Cooling
+			break;
+		case eHeaterStatusCooling:
 			OLED_DrawSymbol(6, 5);
+			break;
 		}
+
 		if (systemSettings.displayTempInF) {
 			OLED_DrawChar('F', 3);
 		} else {
@@ -478,7 +478,6 @@ void DrawUI(void) {
 		// draw power bar
 		lengthPBar = FIXPOINT_DIVROUND(Heater_GetDutyCycle(&heater) * 95);
 		Graph_DrawHorizontalBar(0, 15, lengthPBar);
-
 	}
 		break;
 	case TEMP_ADJ:
