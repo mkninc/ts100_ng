@@ -18,7 +18,7 @@ typedef struct
 	uint32_t rawTemperature;
 	uint32_t currentTemperature;
 	uint32_t setTemperature;
-	uint16_t temperatureCalibrationValue;
+	uint32_t temperatureCalibrationValue;
 }HEATER_INST;
 
 typedef enum {
@@ -43,10 +43,10 @@ extern void Heater_SetDutyCycle(HEATER_INST * const inst, int32_t const dutyCycl
 
 extern int32_t Heater_GetDutyCycle(HEATER_INST * const inst);
 
-extern uint16_t Heater_GetCurrentTemperature(HEATER_INST * const inst);
+extern uint32_t Heater_GetCurrentTemperature(HEATER_INST * const inst);
 
-extern void Heater_SetCalibrationValue(HEATER_INST * const inst, uint16_t const calibrationValue);
+extern void Heater_SetCalibrationValue(HEATER_INST * const inst, uint32_t const calibrationValue);
 
-extern uint16_t Heater_ConvertCalibrateTemperature(HEATER_INST * const inst, uint16_t const rawTemperature);
+extern uint32_t Heater_ConvertCalibrateTemperature(HEATER_INST * const inst, uint32_t const rawTemperature);
 
 #endif /* INC_HEATER_H_ */

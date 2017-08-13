@@ -10,19 +10,17 @@
 
 pidSettingsType pidSettings;
 
-#define MAXPIDOUTPUT 50000
-
 static int32_t ITerm;
 
 //This function computes the new value for the ON time of the system
 //This is the return value from this function
-int32_t computePID(uint16_t const currentValue, uint16_t setpoint) {
+int32_t computePID(uint32_t const currentValue, uint32_t setpoint) {
 	int32_t DInput;
 	int32_t output;
 
 	static int16_t lastReading = 0;
 	int32_t currentReading = currentValue; //get the current temp of the iron
-	pidSettings.currentError = (setpoint - currentReading) * 1000; //calculate the error term
+	pidSettings.currentError = setpoint - currentReading; //calculate the error term
 
 	output = FIXPOINT_DIVROUND(pidSettings.kp * pidSettings.currentError); //  ((pidSettings.kp * error) / FIXPOINT_FACTOR);
 
@@ -36,7 +34,7 @@ int32_t computePID(uint16_t const currentValue, uint16_t setpoint) {
 	else if (ITerm < 0)
 		ITerm = 0; //cap at 0 since we cant force the iron to cool itself :)
 
-	DInput = (currentReading - lastReading) * 1000; //compute the input to the D term
+	DInput = currentReading - lastReading; //compute the input to the D term
 	output += (ITerm) - FIXPOINT_DIVROUND(pidSettings.kd * DInput);
 
 	lastReading = currentReading; //storing values for next iteration of the loop

@@ -64,7 +64,7 @@ void Heater_Init(HEATER_INST * const inst)
 
 //-----------------------------------------------------------------------------
 void Heater_SetTemperature(HEATER_INST * const inst, int32_t const targetTemperature) {
-	inst->setTemperature = targetTemperature;
+	inst->setTemperature = targetTemperature * 1000;
 }
 //-----------------------------------------------------------------------------
 
@@ -90,7 +90,7 @@ void Heater_Execute(HEATER_INST * const inst)
 	uint32_t avgSum;
 	int32_t newOutput;
 
-	timeOn =  FIXPOINT_DIVROUND(inst->cycleTimeMS * inst->dutyCycle); //    (inst->cycleTimeMS * (inst->dutyCycle + 5)) / FIXPOINT_FACTOR;
+	timeOn =  FIXPOINT_DIVROUND(inst->cycleTimeMS * inst->dutyCycle);
 	timeOff = inst->cycleTimeMS - timeOn;
 
 	Heater_EnablePWM(inst);
@@ -114,7 +114,7 @@ void Heater_Execute(HEATER_INST * const inst)
 
 	inst->currentTemperature = Heater_ConvertCalibrateTemperature(inst, inst->rawTemperature);
 
-	newOutput = computePID(Heater_GetCurrentTemperature(inst), inst->setTemperature);
+	newOutput = computePID(inst->currentTemperature, inst->setTemperature);
 	Heater_SetDutyCycle(inst, newOutput);
 }
 //-----------------------------------------------------------------------------
@@ -150,30 +150,30 @@ int32_t Heater_GetDutyCycle(HEATER_INST * const inst)
 return inst->dutyCycle;
 }
 
-uint16_t Heater_GetCurrentTemperature(HEATER_INST * const inst)
+uint32_t Heater_GetCurrentTemperature(HEATER_INST * const inst)
 {
 #ifdef SIMULATION_BOARD
 	return 2900;
 #else
-	return inst->currentTemperature;
+	return (inst->currentTemperature + 500) / 1000;
 #endif
 }
 
-void Heater_SetCalibrationValue(HEATER_INST * const inst, uint16_t const calibrationValue)
+void Heater_SetCalibrationValue(HEATER_INST * const inst, uint32_t const calibrationValue)
 {
 	inst->temperatureCalibrationValue = calibrationValue;
 }
 
-uint16_t Heater_ConvertCalibrateTemperature(HEATER_INST * const inst,
-		uint16_t const rawTemperature) {
-	uint16_t calibratedTemperature;
+uint32_t Heater_ConvertCalibrateTemperature(HEATER_INST * const inst,
+		uint32_t const rawTemperature) {
+	uint32_t calibratedTemperature;
 
-	int16_t ColdJTemp = readSensorTemp();
+	int32_t ColdJTemp = readSensorTemp();
 	if (ColdJTemp > 400)
 		ColdJTemp = 400;
 
 	calibratedTemperature = (rawTemperature * 1000 + 807 * ColdJTemp
 			- inst->temperatureCalibrationValue * 1000) / 807;
 
-	return calibratedTemperature;
+	return calibratedTemperature * 1000;
 }

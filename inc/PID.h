@@ -9,6 +9,7 @@
 
 #ifndef PID_H_
 #define PID_H_
+
 #include "Analog.h"
 #include "Interrupt.h"
 
@@ -19,7 +20,7 @@ typedef struct {
 	int32_t currentError;
 } pidSettingsType;
 
-extern int32_t computePID(uint16_t const currentValue, uint16_t setpoint);
+extern int32_t computePID(uint32_t const currentValue, uint32_t setpoint);
 extern void setupPID(void);
 
 extern int32_t PID_GetError(void);
