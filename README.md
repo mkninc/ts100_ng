@@ -18,7 +18,7 @@ Forked from [Ralim/ts100](https://github.com/Ralim/ts100).
 
 ## PWM implementation details
 PWM frequency: 10 Hz  
-Temperature measurement is done synchronus at the end of the PWM low phase.
+Temperature measurement is done synchronous at the end of the PWM low phase.
 Picture below:  
 Iron is idle at setpoint temperature.(see statistics display in the picture)
 ![PWM Idle](doc/images/PWM_Idle.png)
