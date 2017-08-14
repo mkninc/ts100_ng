@@ -10,6 +10,9 @@
 #include "Oled.h"
 #include "graphbuffer.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include "Settings.h"
 
 
@@ -117,8 +120,8 @@ void showBootLogoIfavailable(void) {
 	if (temp8[3] != 0x0D)
 		return;
 
-
+	Graph_Clear();
 	Graph_DrawArea(0, 0, 96, 16, (uint8_t*) (temp8 + 4));
-
-	delayMs(1000);
+	Graph_Update();
+	vTaskDelay(1000);
 }

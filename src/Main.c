@@ -49,6 +49,14 @@ static void UITask(void * pvParameters) {
 
 	while(!systemReady);
 
+#ifndef SIMULATION_BOARD
+	OLED_DrawString("V 0.9.0a", 8); 					//Version Number
+	Graph_Update();
+	vTaskDelay(500);							//Pause to show version number
+#endif
+
+	showBootLogoIfavailable();
+
 	previousWakeTime = xTaskGetTickCount();
 
 	while (1) {
@@ -114,11 +122,7 @@ void setup(void) {
 
 	Graphic_Init();
 
-#ifndef SIMULATION_BOARD
-	OLED_DrawString("VER 0.XX", 8); 					//Version Number
-#endif
-	delayMs(300);								//Pause to show version number
-	showBootLogoIfavailable();
+
 #ifndef SIMULATION_BOARD
 	Start_Watchdog(1000); 		//start the system watch dog as 1 second timeout
 #endif
