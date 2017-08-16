@@ -55,8 +55,6 @@ static void UITask(void * pvParameters) {
 	vTaskDelay(500);							//Pause to show version number
 #endif
 
-	showBootLogoIfavailable();
-
 	previousWakeTime = xTaskGetTickCount();
 
 	while (1) {
