@@ -42,6 +42,6 @@ extern systemSettingsType systemSettings;
 
 extern void saveSettings(void);
 extern void restoreSettings(void);
-extern uint8_t lookupVoltageLevel(uint8_t level);
+extern uint32_t lookupVoltageLevel(uint32_t const level);
 extern void resetSettings(void);
 #endif /* SETTINGS_H_ */

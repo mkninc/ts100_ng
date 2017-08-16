@@ -21,6 +21,7 @@ extern void GPIO_Init_OLED(void);
 extern void Init_Oled(uint8_t leftHanded);
 extern const u8* Data_Command(u8 len,const u8* ptr);
 extern void Clear_Screen(void);//Clear the screen
+
 /*Functions for writing to the screen*/
 extern void OLED_DrawString(const char* string, const uint8_t length);
 extern void OLED_DrawChar(char c, uint8_t x);

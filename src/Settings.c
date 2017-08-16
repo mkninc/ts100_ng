@@ -21,6 +21,7 @@ systemSettingsType systemSettings;
 #define FLASH_ADDR 		(0x8000000|0xBC00)/*Flash start OR'ed with the maximum amount of flash - 1024 bytes*/
 #define FLASH_LOGOADDR 	(0x8000000|0xB800) /*second last page of flash set aside for logo image*/
 
+//-----------------------------------------------------------------------------
 void saveSettings(void) {
 	uint16_t *data = (uint16_t*) &systemSettings;
 
@@ -36,7 +37,9 @@ void saveSettings(void) {
 		FLASH_ProgramHalfWord(FLASH_ADDR + (i * 2), data[i]);
 	}
 }
+//-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
 void restoreSettings(void) {
 	//We read the flash
 	uint16_t *data = (uint16_t*) &systemSettings;
@@ -50,8 +53,9 @@ void restoreSettings(void) {
 		resetSettings();
 		saveSettings();
 	}
-
 }
+//-----------------------------------------------------------------------------
+
 //Lookup function for cutoff setting -> X10 voltage
 /*
  * 0=DC
@@ -60,12 +64,16 @@ void restoreSettings(void) {
  * 3=5S
  * 4=6S
  */
-uint8_t lookupVoltageLevel(uint8_t level) {
+//-----------------------------------------------------------------------------
+uint32_t lookupVoltageLevel(uint32_t const level) {
 	if (level == 0)
 		return 100;	//10V since iron does not function below this
 	else
 		return (level * 33) + (33 * 2);
 }
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 void resetSettings(void) {
 
 	systemSettings.SleepTemp = 1500;//Temperature the iron sleeps at - default 150.0 C
@@ -83,3 +91,4 @@ void resetSettings(void) {
 	systemSettings.boostModeEnabled = 0;//Default to safe, with no boost mode
 	systemSettings.BoostTemp = 4000;				//default to 400C
 }
+//-----------------------------------------------------------------------------
