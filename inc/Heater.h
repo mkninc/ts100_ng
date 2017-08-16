@@ -16,9 +16,9 @@ typedef struct
 	int32_t dutyCycle;
 	uint32_t cycleTimeMS;
 	uint32_t rawTemperature;
-	uint32_t currentTemperature;
-	uint32_t setTemperature;
-	uint32_t temperatureCalibrationValue;
+	int32_t currentTemperature;
+	int32_t setTemperature;
+	int32_t temperatureCalibrationValue;
 }HEATER_INST;
 
 typedef enum {

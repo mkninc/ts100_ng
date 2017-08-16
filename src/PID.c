@@ -14,7 +14,7 @@ static int32_t ITerm;
 
 //This function computes the new value for the ON time of the system
 //This is the return value from this function
-int32_t computePID(uint32_t const currentValue, uint32_t setpoint) {
+int32_t computePID(int32_t const currentValue, int32_t setpoint) {
 	int32_t DInput;
 	int32_t output;
 

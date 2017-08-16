@@ -249,7 +249,7 @@ void ProcessUI() {
 		Heater_SetTemperature(&heater, systemSettings.SleepTemp);
 		break;
 	case COOLING: {
-		Heater_SetTemperature(&heater, -FIXPOINT_FACTOR * 200); //turn off heating TODO: implement Heater control modes
+		Heater_SetTemperature(&heater, 0); //turn off heating TODO: implement Heater control modes
 		//This mode warns the user the iron is still cooling down
 		if (Buttons & (BUT_A | BUT_B)) { //we check if the user has pushed a button to exit
 			//Either button was pushed

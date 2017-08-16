@@ -20,7 +20,7 @@ typedef struct {
 	int32_t currentError;
 } pidSettingsType;
 
-extern int32_t computePID(uint32_t const currentValue, uint32_t setpoint);
+extern int32_t computePID(int32_t const currentValue, int32_t setpoint);
 extern void setupPID(void);
 
 extern int32_t PID_GetError(void);
