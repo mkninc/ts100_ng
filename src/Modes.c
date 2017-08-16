@@ -18,7 +18,6 @@ const char *SettingsLongNames[] = {
 		"      Shutdown Timeout <Minutes>",
 		"      Motion Sensitivity <0.Off 1.least sensitive 9.most sensitive>",
 		"      Temperature Unit", "      Temperature Rounding Amount",
-		"      Temperature Display Update Rate",
 		"      Flip Display for Left Hand",
 		"      Enable front key boost 450C mode when soldering",
 		"      Temperature when in boost mode" };
@@ -195,11 +194,6 @@ void ProcessUI() {
 					systemSettings.temperatureRounding++;
 					systemSettings.temperatureRounding =
 							systemSettings.temperatureRounding % 3;
-					break;
-				case DISPUPDATERATE:
-					systemSettings.displayUpdateSpeed++;
-					systemSettings.displayUpdateSpeed =
-							systemSettings.displayUpdateSpeed % 3;
 					break;
 				case BOOSTMODE:
 					systemSettings.boostModeEnabled =
@@ -413,16 +407,6 @@ void DrawUI(void) {
 	case SOLDERING:
 		//The user is soldering
 	{
-		if (systemSettings.displayUpdateSpeed == DISPLAYMODE_SLOW
-				&& (millis() - lastOLEDDrawTime < 200))
-			return;
-		else if (systemSettings.displayUpdateSpeed == DISPLAYMODE_MEDIUM
-				&& (millis() - lastOLEDDrawTime < 100))
-			return;
-		else if (systemSettings.displayUpdateSpeed == DISPLAYMODE_FAST
-				&& (millis() - lastOLEDDrawTime < 50))
-			return;
-
 		tempavg = (temp + lastSolderingDrawnTemp1
 				+ lastSolderingDrawnTemp2);
 		tempavg /= 3;
@@ -573,23 +557,6 @@ void DrawUI(void) {
 				default:
 					OLED_DrawString("TMPRND 1", 8);
 					break;
-				}
-			}
-				break;
-			case DISPUPDATERATE:
-				//We are prompting the user about their display mode preferences
-			{
-				switch (systemSettings.displayUpdateSpeed) {
-				case DISPLAYMODE_FAST:
-					OLED_DrawString("TMPSPD F", 8);
-					break;
-				case DISPLAYMODE_SLOW:
-					OLED_DrawString("TMPSPD S", 8);
-					break;
-				case DISPLAYMODE_MEDIUM:
-					OLED_DrawString("TMPSPD M", 8);
-					break;
-
 				}
 			}
 				break;

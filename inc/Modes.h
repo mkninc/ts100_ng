@@ -10,6 +10,7 @@
 
 #ifndef MODES_H_
 #define MODES_H_
+
 #include "Interrupt.h"
 #include "S100V0_1.h"
 #include "Oled.h"
@@ -40,7 +41,6 @@ typedef enum {
 	MOTIONSENSITIVITY,
 	TEMPDISPLAY,
 	TEMPROUNDING,
-	DISPUPDATERATE,
 	LEFTY,
 	BOOSTMODE,
 	BOOSTTEMP,
