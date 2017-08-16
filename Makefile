@@ -55,13 +55,7 @@ SOURCE=$(APP_SOURCE_DIR)/startup.c \
 		
 		
 		
-SOURCE_CPP=
-#$(APP_SOURCE_DIR)/main.cpp \
-#		$(APP_SOURCE_DIR)/clock_render.cpp \
-#		$(APP_SOURCE_DIR)/neopixel.cpp \
-#		$(APP_SOURCE_DIR)/RTCClock.cpp \
-#		$(APP_SOURCE_DIR)/DCF77Clock.cpp \
-#		$(APP_SOURCE_DIR)/TestClass.cpp
+#SOURCE_CPP=$(APP_SOURCE_DIR)/PIDnew.cpp
 	
 # ---------------------------------------------------------------------------------
 
@@ -154,7 +148,6 @@ CPUFLAGS=-D GCC_ARMCM3		\
 		
 INCLUDES=-I$(APP_INC_DIR) \
 		-I$(APP_SOURCE_DIR) \
-		-I$(DRV_LIB) 		\
 		-I$(MCUAPI_DIR) \
 		-I$(RTOS_DIR)/include \
 		-I$(RTOS_DIR)/portable/GCC/ARM_CM4F \
