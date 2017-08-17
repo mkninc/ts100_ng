@@ -9,8 +9,18 @@
 #include "stm32f10x.h"
 #include "stm32f10x_gpio.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 void I2C_Configuration(void);
 void I2C_PageWrite(u8* pbuf, u8 numbyte, u8 deviceaddr);
 void I2C_PageRead(u8* pbuf, u8 numbyte, u8 deviceaddr, u8 readaddr);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 /******************************** END OF FILE *********************************/

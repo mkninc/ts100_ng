@@ -3,7 +3,6 @@
  */
 #include "I2C.h"
 #include "config.h"
-#include "Heater.h"
 #include "main.h"
 #include "Bios.h"
 

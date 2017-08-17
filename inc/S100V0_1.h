@@ -4,6 +4,12 @@
  */
 #include "stm32f10x.h"
 #include "stm32f10x_gpio.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 //--------------------------- key Definitions ------------------------------//
 #define KEY1_PIN          GPIO_Pin_9    //PA8
 #define KEY2_PIN          GPIO_Pin_6    //PA6
@@ -45,4 +51,7 @@
                                            ||++------Bits21~18 = 1010 PLL input clock x12
                                            ||+-------Bit22 = 1 USB prescaler is PLL clock
                                            ++--------Bits31~27 Reserved*/
+#ifdef __cplusplus
+}
+#endif
 

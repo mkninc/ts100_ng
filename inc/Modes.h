@@ -18,6 +18,10 @@
 #include "Analog.h"
 #include <string.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum {
 	STARTUP, 		//we are sitting on the prompt to push a button
 	SOLDERING, 		//Normal operating mode
@@ -49,5 +53,9 @@ typedef enum {
 extern void ProcessUI(void);
 extern void DrawUI(void);
 extern void drawTemp(uint16_t temp, uint8_t x, uint8_t roundingMode);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MODES_H_ */

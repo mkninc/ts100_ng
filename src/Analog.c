@@ -6,7 +6,6 @@
  *      Contains the functions related to reading and scaling the adc pins
  *      This is used for temperature and battery voltage sense
  */
-#include "Heater.h"
 #include "main.h"
 
 #include "Analog.h"

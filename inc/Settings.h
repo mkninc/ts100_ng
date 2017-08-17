@@ -11,6 +11,12 @@
 #define SETTINGS_H_
 #include <stdint.h>
 #include "stm32f10x_flash.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #define SETTINGSVERSION 14 /*Change this if you change the struct below to prevent people getting out of sync*/
 
 //Rounding Modes
@@ -44,4 +50,9 @@ extern void saveSettings(void);
 extern void restoreSettings(void);
 extern uint32_t lookupVoltageLevel(uint32_t const level);
 extern void resetSettings(void);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* SETTINGS_H_ */

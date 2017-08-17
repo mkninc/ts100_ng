@@ -8,6 +8,7 @@
 #include "main.h"
 #include <stdlib.h>
 
+#include "Heater.h"
 #include "graphbuffer.h"
 
 #include "Modes.h"

@@ -14,6 +14,10 @@
 #ifndef __MMA8652FC__H
 #define __MMA8652FC__H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 void StartUp_Accelerometer(uint8_t sensitivity);//This is the only function we expose
 
@@ -138,5 +142,10 @@ void StartUp_Accelerometer(uint8_t sensitivity);//This is the only function we e
 
 extern uint8_t I2C_RegisterRead(uint8_t reg);
 extern void I2C_RegisterWrite(uint8_t reg, uint8_t data);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 /******************************** END OF FILE *********************************/

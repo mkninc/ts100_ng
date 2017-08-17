@@ -70,6 +70,11 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /*-----------------------------------------------------------
  * Application specific definitions.
  *
@@ -124,6 +129,10 @@ priority values, 0 to 15.  This must correspond to the
 configKERNEL_INTERRUPT_PRIORITY setting.  Here 15 corresponds to the lowest
 NVIC value of 255. */
 #define configLIBRARY_KERNEL_INTERRUPT_PRIORITY	15
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FREERTOS_CONFIG_H */
 

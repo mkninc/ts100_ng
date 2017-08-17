@@ -16,6 +16,9 @@
 #include "stm32f10x_iwdg.h"
 #include "misc.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 extern void Init_Gtime(void);
 extern void USB_Port(u8 state);
@@ -30,5 +33,10 @@ extern void Init_EXTI(void);
 /*Watchdog*/
 extern void Start_Watchdog(uint32_t ms);
 extern void Clear_Watchdog(void);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 

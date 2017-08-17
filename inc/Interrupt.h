@@ -7,6 +7,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Functions for access to data */
 void delayMs(uint32_t ticks);
 volatile extern uint32_t lastKeyPress;
@@ -112,6 +116,11 @@ extern void DMA2_Channel1_IRQHandler(void);
 extern void DMA2_Channel2_IRQHandler(void);
 extern void DMA2_Channel3_IRQHandler(void);
 extern void DMA2_Channel4_5_IRQHandler(void);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif /* __INTERRUPT_H */
 

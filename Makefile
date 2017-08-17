@@ -10,7 +10,6 @@ SOURCE=$(APP_SOURCE_DIR)/startup.c \
 		$(APP_SOURCE_DIR)/Bios.c \
 		$(APP_SOURCE_DIR)/I2C.c \
 		$(APP_SOURCE_DIR)/Interrupt.c \
-		$(APP_SOURCE_DIR)/Main.c \
 		$(APP_SOURCE_DIR)/MMA8652FC.c \
 		$(APP_SOURCE_DIR)/Modes.c \
 		$(APP_SOURCE_DIR)/Oled.c \
@@ -51,11 +50,8 @@ SOURCE=$(APP_SOURCE_DIR)/startup.c \
 		$(RTOS_DIR)/portable/GCC/ARM_CM3/port.c
 		
 		
-
 		
-		
-		
-#SOURCE_CPP=$(APP_SOURCE_DIR)/PIDnew.cpp
+SOURCE_CPP=$(APP_SOURCE_DIR)/Main.cpp \
 	
 # ---------------------------------------------------------------------------------
 

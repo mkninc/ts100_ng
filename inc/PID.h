@@ -13,6 +13,11 @@
 #include "Analog.h"
 #include "Interrupt.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 typedef struct {
 	int32_t kp;
 	int32_t ki;
@@ -24,5 +29,10 @@ extern int32_t computePID(int32_t const currentValue, int32_t setpoint);
 extern void setupPID(void);
 
 extern int32_t PID_GetError(void);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif /* PID_H_ */

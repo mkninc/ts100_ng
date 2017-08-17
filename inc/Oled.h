@@ -7,9 +7,15 @@
 #ifndef _OLED_SSD1306_H
 #define _OLED_SSD1306_H
 
-#define DEVICEADDR_OLED  0x3c
 #include "stm32f10x.h"
 #include "Interrupt.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+#define DEVICEADDR_OLED  0x3c
 
 extern void Oled_DisplayOn(void);
 extern void Oled_DisplayOff(void);
@@ -32,5 +38,11 @@ extern void OLED_DrawThreeNumber(uint16_t in, uint8_t x);
 extern void OLED_DrawIDLELogo(void);
 extern void OLED_DrawSymbol(uint8_t x,uint8_t symbol);
 extern void OLED_DrawFourNumber(uint16_t in, uint8_t x);
+
+#ifdef __cplusplus
+}
+#endif
+
+
 #endif
 /******************************** END OF FILE *********************************/
