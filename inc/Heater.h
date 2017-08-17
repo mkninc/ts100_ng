@@ -15,54 +15,44 @@ extern "C" {
 #endif
 
 
-//class Heater {
-//
-//private:
-//	int32_t dutyCycle;
-//	uint32_t cycleTimeMS;
-//	uint32_t rawTemperature;
-//	int32_t currentTemperature;
-//	int32_t setTemperature;
-//	int32_t temperatureCalibrationValue;
-//};
+class Heater {
+public:
+	enum HEATER_STATUS {
+		eHeaterStatusMaintain,
+		eHeaterStatusHeating,
+		eHeaterStatusCooling,
+	};
 
-typedef struct
-{
-	int32_t dutyCycle;
-	uint32_t cycleTimeMS;
-	uint32_t rawTemperature;
-	int32_t currentTemperature;
-	int32_t setTemperature;
-	int32_t temperatureCalibrationValue;
-}HEATER_INST;
+	void Init(void);
 
-typedef enum {
-	eHeaterStatusMaintain,
-	eHeaterStatusHeating,
-	eHeaterStatusCooling,
-}HEATER_STATUS;
+	void SetTemperature(int32_t const targetTemperature);
 
-extern void Heater_Init(HEATER_INST * const inst);
+	Heater::HEATER_STATUS GetStatus(void);
 
-extern void Heater_SetTemperature(HEATER_INST * const inst, int32_t const targetTemperature);
+	void Execute(void);
 
-extern HEATER_STATUS Heater_GetStatus(HEATER_INST * const inst);
+	void DisablePWM(void);
 
-extern void Heater_Execute(HEATER_INST * const inst);
+	void EnablePWM(void);
 
-extern void Heater_DisablePWM(HEATER_INST * const inst);
+	void SetDutyCycle(int32_t const dutyCycle);
 
-extern void Heater_EnablePWM(HEATER_INST * const inst);
+	int32_t GetDutyCycle(void);
 
-extern void Heater_SetDutyCycle(HEATER_INST * const inst, int32_t const dutyCycle);
+	uint32_t GetCurrentTemperature(void);
 
-extern int32_t Heater_GetDutyCycle(HEATER_INST * const inst);
+	void SetCalibrationValue(uint32_t const calibrationValue);
 
-extern uint32_t Heater_GetCurrentTemperature(HEATER_INST * const inst);
+	uint32_t ConvertCalibrateTemperature(uint32_t const rawTemperature);
 
-extern void Heater_SetCalibrationValue(HEATER_INST * const inst, uint32_t const calibrationValue);
-
-extern uint32_t Heater_ConvertCalibrateTemperature(HEATER_INST * const inst, uint32_t const rawTemperature);
+private:
+	int32_t dutyCycle_;
+	int32_t cycleTimeMS_;
+	uint32_t rawTemperature_;
+	int32_t currentTemperature_;
+	int32_t setTemperature_;
+	int32_t temperatureCalibrationValue_;
+};
 
 #ifdef __cplusplus
 }

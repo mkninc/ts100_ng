@@ -16,9 +16,10 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-void setup(void);
+static void setup(void);
 
-HEATER_INST heater;
+Heater heater;
+
 volatile uint32_t systemReady;
 
 //-----------------------------------------------------------------------------
@@ -38,7 +39,7 @@ static void MainTask(void * pvParameters) {
 //		if(dummy > 1.0f)
 //			dummy = 0.0f;
 #endif
-		Heater_Execute(&heater);
+		heater.Execute();
 	}
 }
 //-----------------------------------------------------------------------------
@@ -50,7 +51,7 @@ static void UITask(void * pvParameters) {
 	while(!systemReady);
 
 #ifndef SIMULATION_BOARD
-	OLED_DrawString("V 0.9.0", 8); 					//Version Number
+	OLED_DrawString("V 0.9.1d", 8); 					//Version Number
 	Graph_Update();
 	vTaskDelay(500);							//Pause to show version number
 #endif
@@ -99,7 +100,7 @@ int main(void) {
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void setup(void) {
+static void setup(void) {
 
 	GPIO_Config(); 									//setup all the GPIO pins
 	Init_EXTI(); 										//Init the EXTI inputs
@@ -108,14 +109,14 @@ void setup(void) {
 	I2C_Configuration();								//Start the I2C hardware
 	GPIO_Init_OLED();						//Init the GPIO ports for the OLED
 
-	Heater_Init(&heater);
+	heater.Init();
 
 	restoreSettings();									//Load settings
 #ifndef SIMULATION_BOARD
 	StartUp_Accelerometer(systemSettings.sensitivity); //Start the accelerometer
 #endif
 	setupPID(); 										//Init the PID values
-	Heater_SetCalibrationValue(&heater, systemSettings.tempCalibration); //  readIronTemp(systemSettings.tempCalibration, 0, 0); //load the default calibration value
+	heater.SetCalibrationValue(systemSettings.tempCalibration); //  readIronTemp(systemSettings.tempCalibration, 0, 0); //load the default calibration value
 	Init_Oled(systemSettings.flipDisplay); 				//Init the OLED display
 
 	Graphic_Init();

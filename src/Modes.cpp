@@ -8,7 +8,7 @@
 #include "main.h"
 #include <stdlib.h>
 
-#include "Heater.h"
+
 #include "graphbuffer.h"
 
 #include "Modes.h"
@@ -30,7 +30,6 @@ settingsPageEnum settingsPage;
 
 //This does the required processing and state changes
 void ProcessUI() {
-	uint32_t newOutput;
 	uint16_t voltage;
 	uint8_t Buttons = getButtons(); //read the buttons status
 	static uint32_t lastModeChange = 0;
@@ -89,7 +88,7 @@ void ProcessUI() {
 				systemSettings.SolderingTemp = systemSettings.BoostTemp;
 			}
 			//Update target temperature
-			Heater_SetTemperature(&heater, systemSettings.SolderingTemp);
+			heater.SetTemperature(systemSettings.SolderingTemp);
 		} else {
 			if (StatusFlags == 8) {
 				//Boost mode was enabled before
@@ -113,7 +112,7 @@ void ProcessUI() {
 				lastModeChange = millis();
 			}
 			//Update target temperature
-			Heater_SetTemperature(&heater, systemSettings.SolderingTemp);
+			heater.SetTemperature(systemSettings.SolderingTemp);
 		}
 		break;
 	case TEMP_ADJ:
@@ -148,11 +147,11 @@ void ProcessUI() {
 				//A key iterates through the menu
 				if (settingsPage == SETTINGSOPTIONSCOUNT) {
 					//Roll off the end
-					settingsPage = 0;				//reset
+					settingsPage = UVCO;				//reset
 					operatingMode = STARTUP;		//reset back to the startup
 					saveSettings();					//Save the settings
 				} else {
-					++settingsPage;					//move to the next option
+					settingsPage = static_cast<settingsPageEnum>(((int)settingsPage) + 1);					//move to the next option
 				}
 			} else if (Buttons & BUT_A) {
 				//B changes the value selected
@@ -241,10 +240,10 @@ void ProcessUI() {
 			}
 		}
 		//else if nothing has been pushed we need to compute the PID to keep the iron at the sleep temp
-		Heater_SetTemperature(&heater, systemSettings.SleepTemp);
+		heater.SetTemperature(systemSettings.SleepTemp);
 		break;
 	case COOLING: {
-		Heater_SetTemperature(&heater, 0); //turn off heating TODO: implement Heater control modes
+		heater.SetTemperature(0); //turn off heating TODO: implement Heater control modes
 		//This mode warns the user the iron is still cooling down
 		if (Buttons & (BUT_A | BUT_B)) { //we check if the user has pushed a button to exit
 			//Either button was pushed
@@ -326,7 +325,7 @@ void ProcessUI() {
 	}
 		break;
 	case TEMPCAL: {
-		Heater_SetCalibrationValue(&heater, 0);
+		heater.SetCalibrationValue(0);
 		if (Buttons == BUT_B) {
 			//Single button press, cycle over to the DC IN
 			operatingMode = THERMOMETER;
@@ -335,11 +334,11 @@ void ProcessUI() {
 			if (StatusFlags == 0) {
 				for(int32_t i = 0; i < 10; i++)
 				{
-					Heater_Execute(&heater);
+					heater.Execute();
 				}
-				if ((Heater_GetCurrentTemperature(&heater) < 300) && (readSensorTemp() < 300)) {
+				if ((heater.GetCurrentTemperature() < 300) && (readSensorTemp() < 300)) {
 					StatusFlags = 1;
-					systemSettings.tempCalibration = Heater_GetCurrentTemperature(&heater);
+					systemSettings.tempCalibration = heater.GetCurrentTemperature();
 					saveSettings();
 				} else {
 					StatusFlags = 2;
@@ -388,10 +387,9 @@ void DrawUI(void) {
 	uint8_t lengthLeft;
 	uint32_t tempavg;
 	uint32_t lengthPBar;
-	int32_t currentError;
 
 	static uint8_t settingsLongTestScrollPos = 0;
-	uint16_t temp = Heater_GetCurrentTemperature(&heater); //  readIronTemp(0, 0, 0xFFFF);
+	uint16_t temp = heater.GetCurrentTemperature(); //  readIronTemp(0, 0, 0xFFFF);
 	switch (operatingMode) {
 	case STARTUP:
 		//We are chilling in the idle mode
@@ -442,15 +440,17 @@ void DrawUI(void) {
 		OLED_BlankSlot(6 * 12 + 16, 24 - 16); //blank out the tail after the arrows
 
 		// draw heater status
-		switch (Heater_GetStatus(&heater)) {
-		case eHeaterStatusMaintain:
+		switch (heater.GetStatus()) {
+		case Heater::eHeaterStatusMaintain:
 			OLED_DrawSymbol(6, 7);
 			break;
-		case eHeaterStatusHeating:
+		case Heater::eHeaterStatusHeating:
 			OLED_DrawSymbol(6, 6);
 			break;
-		case eHeaterStatusCooling:
+		case Heater::eHeaterStatusCooling:
 			OLED_DrawSymbol(6, 5);
+			break;
+		default:
 			break;
 		}
 
@@ -461,7 +461,7 @@ void DrawUI(void) {
 		}
 
 		// draw power bar
-		lengthPBar = FIXPOINT_DIVROUND(Heater_GetDutyCycle(&heater) * 95);
+		lengthPBar = FIXPOINT_DIVROUND(heater.GetDutyCycle() * 95);
 		Graph_DrawHorizontalBar(0, 15, lengthPBar);
 	}
 		break;
@@ -569,6 +569,8 @@ void DrawUI(void) {
 				case 0:
 					OLED_DrawString("BOOST  F", 8);
 					break;
+				default:
+					break;
 				}
 				break;
 			case BOOSTTEMP:
@@ -599,14 +601,14 @@ void DrawUI(void) {
 	case COOLING:
 		//We are warning the user the tip is cooling
 		OLED_DrawString("COOL ", 5);
-		temp = Heater_GetCurrentTemperature(&heater); // readIronTemp(0, 1, 0xFFFF);		//force temp re-reading
+		temp = heater.GetCurrentTemperature(); // readIronTemp(0, 1, 0xFFFF);		//force temp re-reading
 		drawTemp(temp, 5, systemSettings.temperatureRounding);
 		break;
 	case UVLOWARN:
 		OLED_DrawString("LOW VOLT", 8);
 		break;
 	case THERMOMETER:
-		temp = Heater_GetCurrentTemperature(&heater); //readIronTemp(0, 1, 0xFFFF);	//Force a reading as heater is off
+		temp = heater.GetCurrentTemperature(); //readIronTemp(0, 1, 0xFFFF);	//Force a reading as heater is off
 		OLED_DrawString("TEMP ", 5);//extra one to it clears the leftover 'L' from IDLE
 		drawTemp(temp, 5, 0);
 		break;

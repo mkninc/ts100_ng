@@ -10,12 +10,11 @@
 
 #include "Heater.h"
 
+extern Heater heater;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
-extern HEATER_INST heater;
 
 extern int main(void);
 
