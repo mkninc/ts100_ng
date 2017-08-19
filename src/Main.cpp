@@ -23,6 +23,23 @@ Heater heater;
 volatile uint32_t systemReady;
 
 //-----------------------------------------------------------------------------
+static void callConstructors(void)
+{
+    // Start and end points of the constructor list,
+    // defined by the linker script.
+    extern void (*__init_array_start)();
+    extern void (*__init_array_end)();
+
+    // Call each function in the list.
+    // We have to take the address of the symbols, as __init_array_start *is*
+    // the first function pointer, not the address of it.
+    for (void (**p)() = &__init_array_start; p < &__init_array_end; ++p) {
+        (*p)();
+    }
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 static void MainTask(void * pvParameters) {
 
 	setup();/*Setup the system*/
@@ -89,6 +106,8 @@ int main(void) {
 
 	setupSystem();
 
+	callConstructors();
+
 	xTaskCreate(MainTask, "HeaterControl", configMINIMAL_STACK_SIZE, NULL,
 			tskIDLE_PRIORITY + 2, NULL);
 
@@ -115,7 +134,6 @@ static void setup(void) {
 #ifndef SIMULATION_BOARD
 	StartUp_Accelerometer(systemSettings.sensitivity); //Start the accelerometer
 #endif
-	setupPID(); 										//Init the PID values
 	heater.SetCalibrationValue(systemSettings.tempCalibration); //  readIronTemp(systemSettings.tempCalibration, 0, 0); //load the default calibration value
 	Init_Oled(systemSettings.flipDisplay); 				//Init the OLED display
 

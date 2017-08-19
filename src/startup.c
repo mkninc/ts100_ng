@@ -153,6 +153,23 @@ extern unsigned long _edata;
 //extern U32 __SRAM_START; ///< Startaddresse des Programmspeichers, muss vom Linker bereitgestellt.
 //extern U32 __SRAM_SIZE; ///< Größe des Programmspeichers, muss vom Linker bereitgestellt.
 
+// Start and end points of the constructor list,
+// defined by the linker script.
+extern void (*__init_array_start)(void);
+extern void (*__init_array_end)(void);
+
+//-----------------------------------------------------------------------------
+//static void callConstructors(void)
+//{
+//    // Call each function in the list.
+//    // We have to take the address of the symbols, as __init_array_start *is*
+//    // the first function pointer, not the address of it.
+//    for (void (**p)(void) = &__init_array_start; p < &__init_array_end; ++p) {
+//        (*p)();
+//    }
+//}
+//-----------------------------------------------------------------------------
+
 //*****************************************************************************
 //
 // This is the code that gets called when the processor first starts execution

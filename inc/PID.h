@@ -10,25 +10,26 @@
 #ifndef PID_H_
 #define PID_H_
 
-#include "Analog.h"
-#include "Interrupt.h"
+#include <stdint.h>
+
+class PID {
+public:
+	PID(int32_t const pFactor, int32_t const iFactor, int32_t const dFactor, int32_t const deltaTime);
+	int32_t Update(int32_t const currentValue, int32_t const setPoint);
+	int32_t GetError(void);
+
+private:
+	int32_t pFactor_;
+	int32_t iFactor_;
+	int32_t dFactor_;
+	int32_t deltaTime_;
+	int32_t integral_ = 0;
+	int32_t previousError_ = 0;
+};
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
-typedef struct {
-	int32_t kp;
-	int32_t ki;
-	int32_t kd; //PID values
-	int32_t currentError;
-} pidSettingsType;
-
-extern int32_t computePID(int32_t const currentValue, int32_t setpoint);
-extern void setupPID(void);
-
-extern int32_t PID_GetError(void);
 
 #ifdef __cplusplus
 }

@@ -9,11 +9,7 @@
 #define INC_HEATER_H_
 
 #include <stdint.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include "PID.h"
 
 class Heater {
 public:
@@ -52,10 +48,8 @@ private:
 	int32_t currentTemperature_;
 	int32_t setTemperature_;
 	int32_t temperatureCalibrationValue_;
+
 };
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* INC_HEATER_H_ */

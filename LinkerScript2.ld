@@ -36,9 +36,14 @@ SECTIONS
         KEEP(*(.isr_vector))
         *(.text*)
         *(.rodata*)
+        . = ALIGN(4);
+        __init_array_start = .;
+	    KEEP (*(.init_array*))
+	    __init_array_end = .;
+	    . = ALIGN(4);
         _etext = .;
     } > FLASH
-
+        
     .data : AT(ADDR(.text) + SIZEOF(.text))
     {
         _data = .;

@@ -19,6 +19,7 @@
 
 #include "Heater.h"
 
+static PID pid(100, 100, 0, 1000);
 
 //-----------------------------------------------------------------------------
 void Heater::Init(void) {
@@ -71,7 +72,7 @@ void Heater::SetTemperature(int32_t const targetTemperature) {
 
 //-----------------------------------------------------------------------------
 Heater::HEATER_STATUS Heater::GetStatus(void) {
-	int32_t currentError = PID_GetError();
+	int32_t currentError = pid.GetError();
 	if (abs(currentError) < (int32_t)(FIXPOINT_FACTOR * 1.5)) {
 		return eHeaterStatusMaintain;
 	} else if (currentError > 0) {
@@ -115,7 +116,7 @@ void Heater::Execute(void)
 
 	currentTemperature_ = ConvertCalibrateTemperature(rawTemperature_);
 
-	newOutput = computePID(currentTemperature_, setTemperature_);
+	newOutput = pid.Update(currentTemperature_, setTemperature_);
 	SetDutyCycle(newOutput);
 }
 //-----------------------------------------------------------------------------

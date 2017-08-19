@@ -12,7 +12,6 @@ SOURCE=$(APP_SOURCE_DIR)/startup.c \
 		$(APP_SOURCE_DIR)/Interrupt.c \
 		$(APP_SOURCE_DIR)/MMA8652FC.c \
 		$(APP_SOURCE_DIR)/Oled.c \
-		$(APP_SOURCE_DIR)/PID.c \
 		$(APP_SOURCE_DIR)/Settings.c \
 		$(APP_SOURCE_DIR)/graphbuffer.c \
 		$(MCUAPI_DIR)/src/misc.c \
@@ -52,6 +51,7 @@ SOURCE=$(APP_SOURCE_DIR)/startup.c \
 SOURCE_CPP=$(APP_SOURCE_DIR)/Main.cpp \
 		$(APP_SOURCE_DIR)/Modes.cpp \
 		$(APP_SOURCE_DIR)/Heater.cpp \
+		$(APP_SOURCE_DIR)/PID.cpp \
 	
 # ---------------------------------------------------------------------------------
 
