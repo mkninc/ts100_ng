@@ -76,7 +76,7 @@ OUTPUT_DIR=Objects
 #debug code optimization
 #OPTIM=-Og
 # size optimization
-OPTIM=-Os
+OPTIM=-Os -finline-small-functions -findirect-inlining
 # optimize code
 #OPTIM=-O3
 
@@ -191,8 +191,11 @@ CXXFLAGS=$(CPUFLAGS) \
 		-std=c++17			\
 		$(OPTIM) 			\
 		-fno-common			\
+		-ffreestanding		\
 		-fno-rtti 			\
 		-fno-exceptions 	\
+		-fno-non-call-exceptions \
+		-fno-use-cxa-atexit	\
 		-T$(LDSCRIPT)	
 		
 		
@@ -206,6 +209,7 @@ CFLAGS=$(CPUFLAGS) \
 		-std=c11			\
 		$(OPTIM) 			\
 		-fno-common			\
+		-ffreestanding		\
 		-T$(LDSCRIPT)
 
 		
