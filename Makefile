@@ -1,10 +1,6 @@
-# Eingabebereich ******************************************************************
-# Ausgabename der Hexdatei
 OUTPUT_EXE=TS100_NG
 
-# ---------------------------------------------------------------------------------
-# Quelldateien , wichtig ist das "\" am Ende einer Zeile, wenn noch weitere Dateien
-# folgen. Nach dem "\" dürfen keine weiteren Zeichen folgen.
+# ------------------------------------------------------------------------------
 SOURCE=$(APP_SOURCE_DIR)/startup.c \
 		$(APP_SOURCE_DIR)/Analog.c \
 		$(APP_SOURCE_DIR)/Bios.c \
@@ -53,29 +49,28 @@ SOURCE_CPP=$(APP_SOURCE_DIR)/Main.cpp \
 		$(APP_SOURCE_DIR)/Heater.cpp \
 		$(APP_SOURCE_DIR)/PID.cpp \
 	
-# ---------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-
-# Verzeichnisse ----------------------------------------------------------------
+# path definitions -------------------------------------------------------------
 MCUAPI_DIR=StdPeriph_Driver
 RTOS_DIR=lib/FreeRTOS/Source
 
-# Bibliotheken
+# lib path
 DRV_LIB=$(MCUAPI_DIR)/driverlib
 USB_LIB=$(MCUAPI_DIR)/usblib
 DRV_LIB_LOCAL=DrvLib
 
-# Verzeichnis der lokalen Quelldateien
+# 
 APP_SOURCE_DIR=src
 APP_INC_DIR=inc
 
-# Verzeichnis fuer die Hexdateien
+# output folder
 HEXFILE_DIR=Hexfile
 
-# Verzeichnis fuer Objekt Dateien
+# temporary objects folder
 OUTPUT_DIR=Objects
 
-# Compiler Optimierungen -------------------------------------------------------
+# code optimisation ------------------------------------------------------------
 # no code optimization
 #OPTIM=-O0
 #debug code optimization
@@ -85,7 +80,7 @@ OPTIM=-Os
 # optimize code
 #OPTIM=-O3
 
-# Globale Definitionen
+# global defines ---------------------------------------------------------------
 # Enable ROM library
 #GLOBAL_DEFINES=-DTARGET_IS_BLIZZARD_RB1 -DUART_BUFFERED
 # Without ROM library
@@ -99,19 +94,16 @@ DEBUG=-g
 #DEBUG=
 
 BOOT_HEXFILE=backup/DFU_Flash_Backup.hex
-
-# Ende Eingabebereich **********************************************************	
-# Verwendete Bibliotheken ------------------------------------------------------
+	
+# libs -------------------------------------------------------------------------
 LIBS=
 
-#$(DRV_LIB)/gcc/libdriver.a
+# linker script ----------------------------------------------------------------
+LDSCRIPT=ts100_ng.ld
 
-# Linker script ----------------------------------------------------------------
-LDSCRIPT_FLASH=LinkerScript2.ld
-LDSCRIPT=$(LDSCRIPT_FLASH)
 # ------------------------------------------------------------------------------
 COMPILER=gcc
-# Verwendete Programme ---------------------------------------------------------
+# programs ---------------------------------------------------------------------
 CC=$(GCC_DIR)/arm-none-eabi-gcc
 CPP=$(GCC_DIR)/arm-none-eabi-g++
 AS=$(GCC_DIR)/arm-none-eabi-as
@@ -122,7 +114,7 @@ SIZE=$(GCC_DIR)/arm-none-eabi-size
 SREC=srec_cat
 SREC_INFO=srec_info
 
-# Linker Optionen
+# linker flags -----------------------------------------------------------------
 LINKER_FLAGS=-Wl,--gc-sections 		\
 			-nostartfiles 		\
 			-Xlinker 			\
@@ -134,7 +126,7 @@ LINKER_FLAGS=-Wl,--gc-sections 		\
 			-lc \
 			-lm 
 
-# Allgemeine Compiler Optionen -------------------------------------------------
+# compiler flags ---------------------------------------------------------------
 CPUFLAGS=-D GCC_ARMCM3		\
 		-D ARM_MATH_CM3 	\
 		-D STM32F10X_MD		\
@@ -243,10 +235,9 @@ $(OUT_HEXFILE).srec : $(OUT_HEXFILE).axf
 		$(OBJDUMP) -d -S $(OUT_HEXFILE).axf > $(OUT_HEXFILE).lst
 		$(SIZE) -x $(OUT_HEXFILE).axf
 
-# Regeln fuer die Erzeugung der Hex-Dateien 
-# TODO: Bootloader groesse beim Aufruf von SREC
+# Create hexfile
 $(OUT_HEXFILE).hex : $(OUT_HEXFILE).srec
-		@echo Erstelle $(OUT_HEXFILE).hex
+		@echo Create $(OUT_HEXFILE).hex
 #		$(SREC_INFO) $(BOOT_HEXFILE) -Intel
 		@$(SREC) --line-length=43 $(OUT_HEXFILE).srec -motorola -O $(OUT_HEXFILE).hex -Intel
 		@$(SREC) --line-length=43 $(BOOT_HEXFILE) -Intel -crop 0x8000000 0x8004000 $(OUT_HEXFILE).srec -motorola -O $(OUT_HEXFILE)_FULL.hex -Intel
