@@ -19,7 +19,7 @@
 
 #include "Heater.h"
 
-static PID pid(100, 100, 0, 1000);
+static PID pid(100, 100, 0, 1000, 0, FIXPOINT_FACTOR);
 
 //-----------------------------------------------------------------------------
 void Heater::Init(void) {
@@ -92,7 +92,7 @@ void Heater::Execute(void)
 	uint32_t avgSum;
 	int32_t newOutput;
 
-	timeOn =  FIXPOINT_DIVROUND(cycleTimeMS_ * dutyCycle_);
+	timeOn =  FIXPOINT_MULTIPLY(cycleTimeMS_, dutyCycle_);
 	timeOff = cycleTimeMS_ - timeOn;
 
 	EnablePWM();

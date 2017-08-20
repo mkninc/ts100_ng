@@ -17,7 +17,9 @@ extern "C" {
 
 #define FIXPOINT_FACTOR		(10000)
 
-#define FIXPOINT_DIVROUND(x)     ((x >= 0)?((x + (FIXPOINT_FACTOR / 2)) / FIXPOINT_FACTOR):((x - (FIXPOINT_FACTOR / 2)) / FIXPOINT_FACTOR))
+//#define FIXPOINT_DIVROUND(x)     ((x >= 0)?((x + (FIXPOINT_FACTOR / 2)) / FIXPOINT_FACTOR):((x - (FIXPOINT_FACTOR / 2)) / FIXPOINT_FACTOR))
+#define FIXPOINT_MULTIPLY(x1, x2)	((x1 * x2) / FIXPOINT_FACTOR)
+#define FIXPOINT_DIVIDE(x1, x2)		((x1 * FIXPOINT_FACTOR) / x2)
 
 #ifdef __cplusplus
 }

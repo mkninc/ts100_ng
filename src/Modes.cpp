@@ -461,7 +461,7 @@ void DrawUI(void) {
 		}
 
 		// draw power bar
-		lengthPBar = FIXPOINT_DIVROUND(heater.GetDutyCycle() * 95);
+		lengthPBar = FIXPOINT_MULTIPLY(heater.GetDutyCycle(), 95);
 		Graph_DrawHorizontalBar(0, 15, lengthPBar);
 	}
 		break;
