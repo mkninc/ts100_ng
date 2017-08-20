@@ -199,8 +199,8 @@ CXXFLAGS=$(CPUFLAGS) \
 		-std=c++17			\
 		$(OPTIM) 			\
 		-fno-common			\
-		-fno-rtti \
-		-fno-exceptions \
+		-fno-rtti 			\
+		-fno-exceptions 	\
 		-T$(LDSCRIPT)	
 		
 		
@@ -247,23 +247,11 @@ $(OUT_HEXFILE).srec : $(OUT_HEXFILE).axf
 # TODO: Bootloader groesse beim Aufruf von SREC
 $(OUT_HEXFILE).hex : $(OUT_HEXFILE).srec
 		@echo Erstelle $(OUT_HEXFILE).hex
-		$(SREC_INFO) $(BOOT_HEXFILE) -Intel
-		$(SREC) --line-length=43 $(OUT_HEXFILE).srec -motorola -O $(OUT_HEXFILE).hex -Intel
-		$(SREC) --line-length=43 $(BOOT_HEXFILE) -Intel -crop 0x8000000 0x8004000 $(OUT_HEXFILE).srec -motorola -O $(OUT_HEXFILE)_FULL.hex -Intel
-		$(SREC_INFO) $(OUT_HEXFILE).hex -Intel
-		$(SREC_INFO) $(OUT_HEXFILE)_FULL.hex -Intel
-#		@$(SREC) --line-length=43 $(OUT_HEXFILE).bin -Binary -fill 0xFF 0x0000 0x1D000 -crop 0x1080 0x1CFFE -l-e-crc16 0x1CFFE -xmodem \
-#								$(OUT_HEXFILE).bin -Binary -crop 0x0 0x1080 \
-#								-O $(OUT_HEXFILE).hex -Intel
-#		@$(SREC) --line-length=43 $(BOOT_BIN) -Binary -crop 0x0000 0x1000 \
-#								 $(OUT_HEXFILE).hex -Intel -crop 0x1000 \
-#								-O $(OUT_HEXFILE)_full.hex -Intel													
-#		@$(SREC) --line-length=43 $(OUT_HEXFILE)_full.hex -Intel \
-#								-O $(OUT_HEXFILE)_full.bin -Binary
-#		@$(SREC) --line-length=43 -generate 0x1000 0x1004 -l-e-constant 0xFFFFFFFF 4 \
-#								$(OUT_HEXFILE)_full.hex -Intel -crop 0x1004 0x1D000 \
-#								-O $(OUT_HEXFILE)_update.hex -Intel
-#		@$(OBJCOPY) $(OUT_HEXFILE)_full.bin -I binary -O elf32-littlearm $(OUT_HEXFILE)_full.axf
+#		$(SREC_INFO) $(BOOT_HEXFILE) -Intel
+		@$(SREC) --line-length=43 $(OUT_HEXFILE).srec -motorola -O $(OUT_HEXFILE).hex -Intel
+		@$(SREC) --line-length=43 $(BOOT_HEXFILE) -Intel -crop 0x8000000 0x8004000 $(OUT_HEXFILE).srec -motorola -O $(OUT_HEXFILE)_FULL.hex -Intel
+#		$(SREC_INFO) $(OUT_HEXFILE).hex -Intel
+#		$(SREC_INFO) $(OUT_HEXFILE)_FULL.hex -Intel
 
 $(OUT_HEXFILE).axf : $(OUT_OBJS) $(OUT_OBJS_CPP) Makefile $(LDSCRIPT)
 	@test -d $(@D) || mkdir -p $(@D)
@@ -273,13 +261,13 @@ $(OUT_HEXFILE).axf : $(OUT_OBJS) $(OUT_OBJS_CPP) Makefile $(LDSCRIPT)
 $(OUT_OBJS): $(OUTPUT_DIR)/%.o : %.c Makefile
 	@test -d $(@D) || mkdir -p $(@D)
 	@echo Compiling ${<} 
-	$(CC) -c $(CFLAGS) $< -o $@
+	@$(CC) -c $(CFLAGS) $< -o $@
 	@$(OBJDUMP) -d -S $@ > $@.lst	 	
 	
 $(OUT_OBJS_CPP): $(OUTPUT_DIR)/%.o : %.cpp Makefile
 	@test -d $(@D) || mkdir -p $(@D)
 	@echo Compiling ${<} 
-	$(CPP) -c $(CXXFLAGS) $< -o $@
+	@$(CPP) -c $(CXXFLAGS) $< -o $@
 	@$(OBJDUMP) -d -S $@ > $@.lst	 
 			
 clean :
