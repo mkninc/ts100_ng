@@ -21,7 +21,7 @@ public:
 
 	void Init(void);
 
-	void SetTemperature(int32_t const targetTemperature);
+	void SetTemperature(float const targetTemperature);
 
 	Heater::HEATER_STATUS GetStatus(void);
 
@@ -31,22 +31,22 @@ public:
 
 	void EnablePWM(void);
 
-	void SetDutyCycle(int32_t const dutyCycle);
+	void SetDutyCycle(float const dutyCycle);
 
-	int32_t GetDutyCycle(void);
+	float GetDutyCycle(void);
 
-	uint32_t GetCurrentTemperature(void);
+	float GetCurrentTemperature(void);
 
 	void SetCalibrationValue(uint32_t const calibrationValue);
 
-	uint32_t ConvertCalibrateTemperature(uint32_t const rawTemperature);
+	float ConvertCalibrateTemperature(uint32_t const rawTemperature);
 
 private:
-	int32_t dutyCycle_;
+	float dutyCycle_;
 	int32_t cycleTimeMS_;
 	uint32_t rawTemperature_;
-	int32_t currentTemperature_;
-	int32_t setTemperature_;
+	float currentTemperature_;
+	float setTemperature_;
 	int32_t temperatureCalibrationValue_;
 
 };

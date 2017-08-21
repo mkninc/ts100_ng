@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 
-#define SETTINGSVERSION 14 /*Change this if you change the struct below to prevent people getting out of sync*/
+#define SETTINGSVERSION 15 /*Change this if you change the struct below to prevent people getting out of sync*/
 
 //Rounding Modes
 #define ROUNDING_NONE			(0x00)
@@ -28,8 +28,8 @@ extern "C" {
  * This struct must be a multiple of 2 bytes as it is saved / restored from flash in uint16_t chunks
  */
 typedef struct {
-	uint16_t SolderingTemp; 		//current set point for the iron
-	uint32_t SleepTemp; 			//temp to drop to in sleep
+	int32_t SolderingTemp; 		//current set point for the iron
+	int32_t SleepTemp; 			//temp to drop to in sleep
 	uint8_t version;				//Used to track if a reset is needed on firmware upgrade
 	uint8_t SleepTime; 				//minutes timeout to sleep
 	uint8_t cutoutSetting:5; 		//(3 bits) The voltage we cut out at for under voltage
@@ -41,7 +41,7 @@ typedef struct {
 	uint8_t boostModeEnabled:1;		//Boost mode swaps BUT_A in soldering mode to temporary soldering temp over-ride
 	uint16_t tempCalibration;		//Temperature calibration value
 	uint16_t voltageDiv;			//Voltage divisor factor
-	uint16_t BoostTemp; 			//Boost mode set point for the iron
+	int32_t BoostTemp; 			//Boost mode set point for the iron
 } systemSettingsType;
 
 extern systemSettingsType systemSettings;

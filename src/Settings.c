@@ -76,9 +76,9 @@ uint32_t lookupVoltageLevel(uint32_t const level) {
 //-----------------------------------------------------------------------------
 void resetSettings(void) {
 
-	systemSettings.SleepTemp = 1500;//Temperature the iron sleeps at - default 150.0 C
+	systemSettings.SleepTemp = 150;//Temperature the iron sleeps at - default 150.0 C
 	systemSettings.SleepTime = 1;//How many minutes we wait until going to sleep - default 1 min
-	systemSettings.SolderingTemp = 3200;	//Default soldering temp is 320.0 C
+	systemSettings.SolderingTemp = 320;	//Default soldering temp is 320.0 C
 	systemSettings.cutoutSetting = 0;			//default to no cut-off voltage
 	systemSettings.version = SETTINGSVERSION;//Store the version number to allow for easier upgrades
 	systemSettings.displayTempInF = 0;			//default to C
@@ -89,6 +89,6 @@ void resetSettings(void) {
 	systemSettings.ShutdownTime = 30;//How many minutes until the unit turns itself off
 	systemSettings.temperatureRounding = 0;	//How the temperature is rounded off
 	systemSettings.boostModeEnabled = 0;//Default to safe, with no boost mode
-	systemSettings.BoostTemp = 4000;				//default to 400C
+	systemSettings.BoostTemp = 400;				//default to 400C
 }
 //-----------------------------------------------------------------------------

@@ -14,20 +14,20 @@
 
 class PID {
 public:
-	PID(int32_t const pFactor, int32_t const iFactor, int32_t const dFactor, int32_t const bFactor, int32_t const deltaTime, int32_t const outMin, int32_t const outMax);
-	int32_t Update(int32_t const currentValue, int32_t const setPoint);
-	int32_t GetError(void);
+	PID(float const pFactor, float const iFactor, float const dFactor, float const bFactor, float const deltaTime, float const outMin, float const outMax);
+	float Update(float const currentValue, float const setPoint);
+	float GetError(void);
 
 private:
-	int32_t pFactor_;
-	int32_t iFactor_;
-	int32_t dFactor_;
-	int32_t bFactor_;
-	int32_t deltaTime_;
-	int32_t outMin_;
-	int32_t outMax_;
-	int32_t integral_ = 0;
-	int32_t previousError_ = 0;
+	float pFactor_;
+	float iFactor_;
+	float dFactor_;
+	float bFactor_;
+	float deltaTime_;
+	float outMin_;
+	float outMax_;
+	float integral_ = 0.0f;
+	float previousError_ = 0.0f;
 };
 
 #ifdef __cplusplus

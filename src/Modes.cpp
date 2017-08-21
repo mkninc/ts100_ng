@@ -119,12 +119,12 @@ void ProcessUI() {
 		if (Buttons == BUT_A) {
 			//A key pressed so we are moving down in temp
 
-			if (systemSettings.SolderingTemp > 1000)
-				systemSettings.SolderingTemp -= 100;
+			if (systemSettings.SolderingTemp > 100)
+				systemSettings.SolderingTemp -= 10;
 		} else if (Buttons == BUT_B) {
 			//B key pressed so we are moving up in temp
-			if (systemSettings.SolderingTemp < 4500)
-				systemSettings.SolderingTemp += 100;
+			if (systemSettings.SolderingTemp < 450)
+				systemSettings.SolderingTemp += 10;
 		} else {
 			//we check the timeout for how long the buttons have not been pushed
 			//if idle for > 3 seconds then we return to soldering
@@ -162,9 +162,9 @@ void ProcessUI() {
 					systemSettings.cutoutSetting %= 5;		//wrap 0->4
 					break;
 				case SLEEP_TEMP:
-					systemSettings.SleepTemp += 100;	//Go up 10C at a time
-					if (systemSettings.SleepTemp > 3000)
-						systemSettings.SleepTemp = 1000;//cant sleep higher than 300
+					systemSettings.SleepTemp += 10;	//Go up 10C at a time
+					if (systemSettings.SleepTemp > 300)
+						systemSettings.SleepTemp = 100;//cant sleep higher than 300
 					break;
 				case SLEEP_TIME:
 					++systemSettings.SleepTime;		//Go up 1 minute at a time
@@ -200,9 +200,9 @@ void ProcessUI() {
 							!systemSettings.boostModeEnabled;
 					break;
 				case BOOSTTEMP:
-					systemSettings.BoostTemp += 100;	//Go up 10C at a time
-					if (systemSettings.BoostTemp > 4500)
-						systemSettings.BoostTemp = 2500;	//loop back at 250
+					systemSettings.BoostTemp += 10;	//Go up 10C at a time
+					if (systemSettings.BoostTemp > 450)
+						systemSettings.BoostTemp = 250;	//loop back at 250
 					break;
 				default:
 					break;
@@ -243,7 +243,7 @@ void ProcessUI() {
 		heater.SetTemperature(systemSettings.SleepTemp);
 		break;
 	case COOLING: {
-		heater.SetTemperature(0); //turn off heating TODO: implement Heater control modes
+		heater.SetTemperature(0.0f); //turn off heating TODO: implement Heater control modes
 		//This mode warns the user the iron is still cooling down
 		if (Buttons & (BUT_A | BUT_B)) { //we check if the user has pushed a button to exit
 			//Either button was pushed
@@ -336,9 +336,9 @@ void ProcessUI() {
 				{
 					heater.Execute();
 				}
-				if ((heater.GetCurrentTemperature() < 300) && (readSensorTemp() < 300)) {
+				if ((heater.GetCurrentTemperature() < 30) && (readSensorTemp() < 300)) {
 					StatusFlags = 1;
-					systemSettings.tempCalibration = heater.GetCurrentTemperature();
+					systemSettings.tempCalibration = heater.GetCurrentTemperature() * 10.0f;
 					saveSettings();
 				} else {
 					StatusFlags = 2;
@@ -359,6 +359,8 @@ void ProcessUI() {
  * Draws the temp with temp conversion if needed
  */
 void drawTemp(uint16_t temp, uint8_t x, uint8_t roundingMode) {
+	temp *= 10;
+
 	if (systemSettings.displayTempInF)
 		temp = (temp * 9 + 1600) / 5;/*Convert to F -> T*(9/5)+32*/
 	if (temp % 10 > 5)
@@ -382,14 +384,11 @@ void drawTemp(uint16_t temp, uint8_t x, uint8_t roundingMode) {
  */
 void DrawUI(void) {
 	static uint32_t lastOLEDDrawTime = 0;
-	static uint16_t lastSolderingDrawnTemp1 = 0;
-	static uint16_t lastSolderingDrawnTemp2 = 0;
 	uint8_t lengthLeft;
-	uint32_t tempavg;
 	uint32_t lengthPBar;
 
 	static uint8_t settingsLongTestScrollPos = 0;
-	uint16_t temp = heater.GetCurrentTemperature(); //  readIronTemp(0, 0, 0xFFFF);
+	float temp = heater.GetCurrentTemperature() + 0.5f;
 	switch (operatingMode) {
 	case STARTUP:
 		//We are chilling in the idle mode
@@ -406,12 +405,7 @@ void DrawUI(void) {
 	case SOLDERING:
 		//The user is soldering
 	{
-		tempavg = (temp + lastSolderingDrawnTemp1
-				+ lastSolderingDrawnTemp2);
-		tempavg /= 3;
-		drawTemp(tempavg, 0, systemSettings.temperatureRounding);
-		lastSolderingDrawnTemp1 = temp;
-		lastSolderingDrawnTemp2 = lastSolderingDrawnTemp1;
+		drawTemp(temp, 0, systemSettings.temperatureRounding);
 		lastOLEDDrawTime = millis();
 		//Now draw symbols
 		if (StatusFlags == 8)
@@ -461,7 +455,7 @@ void DrawUI(void) {
 		}
 
 		// draw power bar
-		lengthPBar = FIXPOINT_MULTIPLY(heater.GetDutyCycle(), 95);
+		lengthPBar = heater.GetDutyCycle() * 95.0f;
 		Graph_DrawHorizontalBar(0, 15, lengthPBar);
 	}
 		break;
@@ -515,7 +509,7 @@ void DrawUI(void) {
 				break;
 			case SLEEP_TEMP:
 				OLED_DrawString("STMP ", 5);
-				OLED_DrawThreeNumber(systemSettings.SleepTemp / 10, 5);
+				OLED_DrawThreeNumber(systemSettings.SleepTemp, 5);
 				break;
 			case SLEEP_TIME:
 				OLED_DrawString("SLTME ", 6);
@@ -575,7 +569,7 @@ void DrawUI(void) {
 				break;
 			case BOOSTTEMP:
 				OLED_DrawString("BTMP ", 5);
-				OLED_DrawThreeNumber(systemSettings.BoostTemp / 10, 5);
+				OLED_DrawThreeNumber(systemSettings.BoostTemp, 5);
 				break;
 			default:
 				break;
@@ -601,14 +595,12 @@ void DrawUI(void) {
 	case COOLING:
 		//We are warning the user the tip is cooling
 		OLED_DrawString("COOL ", 5);
-		temp = heater.GetCurrentTemperature(); // readIronTemp(0, 1, 0xFFFF);		//force temp re-reading
 		drawTemp(temp, 5, systemSettings.temperatureRounding);
 		break;
 	case UVLOWARN:
 		OLED_DrawString("LOW VOLT", 8);
 		break;
 	case THERMOMETER:
-		temp = heater.GetCurrentTemperature(); //readIronTemp(0, 1, 0xFFFF);	//Force a reading as heater is off
 		OLED_DrawString("TEMP ", 5);//extra one to it clears the leftover 'L' from IDLE
 		drawTemp(temp, 5, 0);
 		break;

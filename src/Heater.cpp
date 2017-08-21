@@ -7,6 +7,8 @@
 
 #include "config.h"
 #include <stdlib.h>
+#include <math.h>
+
 #include "stm32f10x.h"
 
 #include "FreeRTOS.h"
@@ -19,7 +21,7 @@
 
 #include "Heater.h"
 
-static PID pid(300, 200, 0, 40000, 1000, 0, FIXPOINT_FACTOR);
+static PID pid(0.03f, 0.02f, 0.0f, 4.0f, 0.1f, 0.0f, 1.0f);
 
 //-----------------------------------------------------------------------------
 void Heater::Init(void) {
@@ -28,8 +30,8 @@ void Heater::Init(void) {
 	TIM_OCInitTypeDef tTimerOCConfig;
 
 	cycleTimeMS_ = 100;
-	dutyCycle_ = 0;
-	setTemperature_ = 0;
+	dutyCycle_ = 0.0f;
+	setTemperature_ = 0.0f;
 
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 
@@ -65,15 +67,15 @@ void Heater::Init(void) {
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void Heater::SetTemperature(int32_t const targetTemperature) {
-	setTemperature_ = targetTemperature * 1000;
+void Heater::SetTemperature(float const targetTemperature) {
+	setTemperature_ = targetTemperature;
 }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 Heater::HEATER_STATUS Heater::GetStatus(void) {
-	int32_t currentError = pid.GetError();
-	if (abs(currentError) < (int32_t)(FIXPOINT_FACTOR * 1.5)) {
+	float currentError = pid.GetError();
+	if (fabsf(currentError) < 1.5f) {
 		return eHeaterStatusMaintain;
 	} else if (currentError > 0) {
 		return eHeaterStatusHeating;
@@ -90,9 +92,9 @@ void Heater::Execute(void)
 	uint32_t timeOff;
 	uint32_t measureDelay;
 	uint32_t avgSum;
-	int32_t newOutput;
+	float newOutput;
 
-	timeOn =  FIXPOINT_MULTIPLY(cycleTimeMS_, dutyCycle_);
+	timeOn =  cycleTimeMS_ * dutyCycle_;
 	timeOff = cycleTimeMS_ - timeOn;
 
 	EnablePWM();
@@ -117,11 +119,11 @@ void Heater::Execute(void)
 	currentTemperature_ = ConvertCalibrateTemperature(rawTemperature_);
 
 	newOutput = pid.Update(currentTemperature_, setTemperature_);
-	if(currentTemperature_ < (460 * FIXPOINT_FACTOR)) {
+	if(currentTemperature_ < (setTemperature_ + 20.0f)) {
 		SetDutyCycle(newOutput);
 	}
 	else { // overheating protection, shutoff heater
-		SetDutyCycle(0);
+		SetDutyCycle(0.0f);
 	}
 }
 //-----------------------------------------------------------------------------
@@ -139,29 +141,29 @@ void Heater::EnablePWM(void) {
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-void Heater::SetDutyCycle(int32_t const dutyCycle) {
+void Heater::SetDutyCycle(float const dutyCycle) {
 	dutyCycle_ = dutyCycle;
 
-	if (dutyCycle_ < 0)
-		dutyCycle_ = 0;
+	if (dutyCycle_ < 0.0f)
+		dutyCycle_ = 0.0f;
 
-	if (dutyCycle_ > FIXPOINT_FACTOR)
-		dutyCycle_ = FIXPOINT_FACTOR;
+	if (dutyCycle_ > 1.0f)
+		dutyCycle_ = 1.0f;
 }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-int32_t Heater::GetDutyCycle(void) {
+float Heater::GetDutyCycle(void) {
 	return dutyCycle_;
 }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-uint32_t Heater::GetCurrentTemperature(void) {
+float Heater::GetCurrentTemperature(void) {
 #ifdef SIMULATION_BOARD
-	return 2900;
+	return 290.0f;
 #else
-	return (currentTemperature_ + 500) / 1000;
+	return currentTemperature_;
 #endif
 }
 //-----------------------------------------------------------------------------
@@ -173,7 +175,7 @@ void Heater::SetCalibrationValue(uint32_t const calibrationValue) {
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-uint32_t Heater::ConvertCalibrateTemperature(uint32_t const rawTemperature) {
+float Heater::ConvertCalibrateTemperature(uint32_t const rawTemperature) {
 	uint32_t calibratedTemperature;
 
 	int32_t ColdJTemp = readSensorTemp();
@@ -183,7 +185,7 @@ uint32_t Heater::ConvertCalibrateTemperature(uint32_t const rawTemperature) {
 	calibratedTemperature = (rawTemperature * 1000 + 807 * ColdJTemp
 			- temperatureCalibrationValue_ * 1000) / 807;
 
-	return calibratedTemperature * 1000;
+	return calibratedTemperature / 10.0f;
 }
 //-----------------------------------------------------------------------------
 

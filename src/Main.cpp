@@ -115,6 +115,8 @@ int main(void) {
 				tskIDLE_PRIORITY + 1, NULL);
 
 	vTaskStartScheduler();
+
+	return 0;
 }
 //-----------------------------------------------------------------------------
 

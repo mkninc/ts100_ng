@@ -8,9 +8,9 @@
 #include "PID.h"
 
 //-----------------------------------------------------------------------------
-PID::PID(int32_t const pFactor, int32_t const iFactor, int32_t const dFactor,
-		int32_t const bFactor, int32_t const deltaTime, int32_t const outMin,
-		int32_t const outMax) {
+PID::PID(float const pFactor, float const iFactor, float const dFactor,
+		float const bFactor, float const deltaTime, float const outMin,
+		float const outMax) {
 	pFactor_ = pFactor;
 	iFactor_ = iFactor;
 	dFactor_ = dFactor;
@@ -18,30 +18,29 @@ PID::PID(int32_t const pFactor, int32_t const iFactor, int32_t const dFactor,
 	deltaTime_ = deltaTime;
 	outMin_ = outMin;
 	outMax_ = outMax;
-	integral_ = 0;
 }
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-int32_t PID::Update(int32_t const currentValue, int32_t const setPoint) {
-	int32_t error;
-	int32_t pOut;
-	int32_t iOut;
-	int32_t dOut;
-	int32_t output;
-	int32_t derivative;
-	int32_t saturation;
-	int32_t error_i;
+float PID::Update(float const currentValue, float const setPoint) {
+	float error;
+	float pOut;
+	float iOut;
+	float dOut;
+	float output;
+	float derivative;
+	float saturation;
+	float error_i;
 
 	error = setPoint - currentValue;
 
-	pOut = FIXPOINT_MULTIPLY(pFactor_, error);
+	pOut = pFactor_ * error;
 
-	derivative = FIXPOINT_DIVIDE((error - previousError_),  deltaTime_);
-	dOut = FIXPOINT_MULTIPLY(derivative, dFactor_);
+	derivative = (error - previousError_) / deltaTime_;
+	dOut = derivative * dFactor_;
 
-	error_i = FIXPOINT_MULTIPLY(deltaTime_, error);
-	iOut = FIXPOINT_MULTIPLY(iFactor_, integral_ + error_i);
+	error_i = deltaTime_ * error;
+	iOut = iFactor_ * (integral_ + error_i);
 
 	output = pOut + iOut + dOut;
 
@@ -55,8 +54,8 @@ int32_t PID::Update(int32_t const currentValue, int32_t const setPoint) {
 		saturation = 0;
 	}
 
-	integral_ += error_i - FIXPOINT_MULTIPLY(saturation, bFactor_);
-	iOut = FIXPOINT_MULTIPLY(iFactor_, integral_);
+	integral_ += error_i - (saturation * bFactor_);
+	iOut = iFactor_ * integral_;
 
 	output = pOut + iOut + dOut;
 
@@ -74,7 +73,7 @@ int32_t PID::Update(int32_t const currentValue, int32_t const setPoint) {
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-int32_t PID::GetError(void) {
+float PID::GetError(void) {
 	return previousError_;
 }
 //-----------------------------------------------------------------------------
