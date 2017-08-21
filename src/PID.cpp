@@ -45,8 +45,8 @@ int32_t PID::Update(int32_t const currentValue, int32_t const setPoint) {
 //	if(iOut > (FIXPOINT_FACTOR / 2))
 //			iOut = (FIXPOINT_FACTOR / 2);
 
-	//derivative = ((error - previousError_) / deltaTime_)
-	dOut = 0;
+	derivative = FIXPOINT_DIVIDE((error - previousError_),  deltaTime_);
+	dOut = FIXPOINT_MULTIPLY(derivative, dFactor_);
 
 	output = pOut + iOut + dOut;
 
