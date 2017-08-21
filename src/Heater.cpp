@@ -19,7 +19,7 @@
 
 #include "Heater.h"
 
-static PID pid(100, 100, 0, 1000, 0, FIXPOINT_FACTOR);
+static PID pid(300, 200, 0, 40000, 1000, 0, FIXPOINT_FACTOR);
 
 //-----------------------------------------------------------------------------
 void Heater::Init(void) {
@@ -117,7 +117,12 @@ void Heater::Execute(void)
 	currentTemperature_ = ConvertCalibrateTemperature(rawTemperature_);
 
 	newOutput = pid.Update(currentTemperature_, setTemperature_);
-	SetDutyCycle(newOutput);
+	if(currentTemperature_ < (460 * FIXPOINT_FACTOR)) {
+		SetDutyCycle(newOutput);
+	}
+	else { // overheating protection, shutoff heater
+		SetDutyCycle(0);
+	}
 }
 //-----------------------------------------------------------------------------
 

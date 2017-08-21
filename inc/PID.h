@@ -14,7 +14,7 @@
 
 class PID {
 public:
-	PID(int32_t const pFactor, int32_t const iFactor, int32_t const dFactor, int32_t const deltaTime, int32_t const outMin, int32_t const outMax);
+	PID(int32_t const pFactor, int32_t const iFactor, int32_t const dFactor, int32_t const bFactor, int32_t const deltaTime, int32_t const outMin, int32_t const outMax);
 	int32_t Update(int32_t const currentValue, int32_t const setPoint);
 	int32_t GetError(void);
 
@@ -22,6 +22,7 @@ private:
 	int32_t pFactor_;
 	int32_t iFactor_;
 	int32_t dFactor_;
+	int32_t bFactor_;
 	int32_t deltaTime_;
 	int32_t outMin_;
 	int32_t outMax_;
