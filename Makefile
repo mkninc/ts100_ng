@@ -188,7 +188,7 @@ CXXFLAGS=$(CPUFLAGS) \
 		-D${COMPILER}  		\
 		-MMD 				\
 		$(CHECKOPTIONS)		\
-		-std=c++17			\
+		-std=c++11			\
 		$(OPTIM) 			\
 		-fno-common			\
 		-ffreestanding		\
