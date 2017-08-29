@@ -68,7 +68,7 @@ static void UITask(void * pvParameters) {
 	while(!systemReady);
 
 #ifndef SIMULATION_BOARD
-	OLED_DrawString("V 0.9.1", 8); 					//Version Number
+	OLED_DrawString("V 0.9.2d", 8); 					//Version Number
 	Graph_Update();
 	vTaskDelay(500);							//Pause to show version number
 #endif
