@@ -1,6 +1,7 @@
 # TS100_NG
 
 [![build status](http://gitlab01.ncc-1701-d/marco/ts100_ng/badges/master/build.svg)](http://gitlab01.ncc-1701-d/marco/ts100_ng/commits/master)
+![Travis CI build status](https://travis-ci.org/mkninc/ts100_ng.svg?branch=master)
 
 Alternative firmware for TS100 soldering iron.
 
