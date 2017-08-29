@@ -104,13 +104,13 @@ LDSCRIPT=ts100_ng.ld
 # ------------------------------------------------------------------------------
 COMPILER=gcc
 # programs ---------------------------------------------------------------------
-CC=$(GCC_DIR)/arm-none-eabi-gcc
-CPP=$(GCC_DIR)/arm-none-eabi-g++
-AS=$(GCC_DIR)/arm-none-eabi-as
-GCOV=$(GCC_DIR)/arm-none-eabi-gcov
-OBJCOPY=$(GCC_DIR)/arm-none-eabi-objcopy
-OBJDUMP=$(GCC_DIR)/arm-none-eabi-objdump
-SIZE=$(GCC_DIR)/arm-none-eabi-size
+CC=arm-none-eabi-gcc
+CPP=arm-none-eabi-g++
+AS=arm-none-eabi-as
+GCOV=arm-none-eabi-gcov
+OBJCOPY=arm-none-eabi-objcopy
+OBJDUMP=arm-none-eabi-objdump
+SIZE=arm-none-eabi-size
 SREC=srec_cat
 SREC_INFO=srec_info
 
