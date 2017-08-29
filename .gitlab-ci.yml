@@ -2,7 +2,7 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 before_script:
-- export GCC_DIR="/wbin/opt/gcc-arm-none-eabi-6-2017-q2-update/bin"
+- export PATH="/wbin/opt/gcc-arm-none-eabi-6-2017-q2-update/bin:$PATH"
 
 stages:
 - build
